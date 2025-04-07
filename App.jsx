@@ -73,62 +73,64 @@ const App = () => {
   ];
 
   return (
-    <div style={{ display: "flex" }}>
-      <Sidebar />
-      <div
-        style={{
-          flex: 1,
-          padding: "20px",
-          backgroundColor: "#1E1E1E",
-          color: "#fff",
-        }}
-      >
+    <div className="app-container">
+      {/* Sidebar */}
+      {/* <Sidebar /> */}
+
+      {/* Main Content */}
+      <div className="main-content">
         <Header />
-        <h2>Overview</h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "20px",
-          }}
-        >
-          {cardsData.map((card, index) => (
-            <CardComponent
-              key={index}
-              title={card.title}
-              value={card.value}
-              change={card.change}
-              subtitle={card.subtitle}
-            />
-          ))}
-        </div>
-        <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
-          <div style={{ flex: 1 }}>
-            <LineChart
-              labels={lineChartData.labels}
-              data={lineChartData.data}
-              options={{
-                scales: {
-                  y: { beginAtZero: true },
-                },
-              }}
-            />
+        <section className="overview-section">
+          <h2 className="section-title">Overview</h2>
+          <div className="cards-grid">
+            {cardsData.map((card, index) => (
+              <CardComponent
+                key={index}
+                title={card.title}
+                value={card.value}
+                change={card.change}
+                subtitle={card.subtitle}
+              />
+            ))}
           </div>
-          <div style={{ flex: 1 }}>
-            <BarChart
-              labels={barChartData.labels}
-              data={barChartData.data}
-              options={{
-                scales: {
-                  y: { beginAtZero: true },
-                },
-              }}
-            />
+        </section>
+
+        <section className="charts-section">
+          <h2 className="section-title">Analytics</h2>
+          <div className="charts-container">
+            {/* Line Chart */}
+            <div className="chart-wrapper">
+              <LineChart
+                labels={lineChartData.labels}
+                data={lineChartData.data}
+                options={{
+                  scales: {
+                    y: { beginAtZero: true },
+                  },
+                }}
+              />
+            </div>
+
+            {/* Bar Chart */}
+            <div className="chart-wrapper">
+              <BarChart
+                labels={barChartData.labels}
+                data={barChartData.data}
+                options={{
+                  scales: {
+                    y: { beginAtZero: true },
+                  },
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <h2>Details</h2>
-        {/* Use the DataTable component */}
-        <DataTable columns={tableColumns} rows={tableRows} />
+        </section>
+
+        <section className="details-section">
+          <h2 className="section-title">Details</h2>
+          {/* Use the DataTable component */}
+          <DataTable columns={tableColumns} rows={tableRows} />
+        </section>
       </div>
     </div>
   );
