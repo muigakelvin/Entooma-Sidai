@@ -3,7 +3,7 @@ import React from "react";
 import Header from "./components/Header.jsx";
 import Sidebar from "./components/SideBar.jsx";
 import CardComponent from "./components/Card.jsx";
-import LineChart from "./components/LineChart.jsx";
+import Map from "./components/Map.jsx";
 import BarChart from "./components/BarChart.jsx";
 import DataTable from "./components/DataTable"; // Import the new DataTable component
 import "./index.css";
@@ -26,13 +26,28 @@ const App = () => {
     { title: "Counties", value: "", change: "", subtitle: "" },
   ];
 
-  const lineChartData = {
-    labels: ["Apr 5", "Apr 10", "Apr 15", "Apr 20", "Apr 25", "Apr 30"],
+  const MapData = {
+    labels: [
+      "region 5",
+      "region 10",
+      "region 15",
+      "region 20",
+      "region 25",
+      "region 30",
+    ],
     data: [2000, 5000, 8000, 12000, 15000, 18000],
   };
 
   const barChartData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+    labels: [
+      "region 1",
+      "region 2",
+      "Region 3",
+      "Region 4",
+      "Region 5",
+      "Region 6",
+      "Region 7",
+    ],
     data: [8000, 10000, 7000, 9000, 11000, 8500, 7500],
   };
 
@@ -131,9 +146,9 @@ const App = () => {
           <div className="charts-container">
             {/* Line Chart */}
             <div className="chart-wrapper">
-              <LineChart
-                labels={lineChartData.labels}
-                data={lineChartData.data}
+              <Map
+                labels={MapData.labels}
+                data={MapData.data}
                 options={{
                   scales: {
                     y: { beginAtZero: true },

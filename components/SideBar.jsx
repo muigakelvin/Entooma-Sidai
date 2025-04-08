@@ -47,7 +47,7 @@ const Sidebar = () => {
           {[
             { text: "Home", icon: <HomeIcon /> },
             { text: "Analytics", icon: <AnalyticsIcon /> },
-            { text: "Clients", icon: <PeopleIcon /> },
+            { text: "LandOwners", icon: <PeopleIcon /> },
             { text: "Tasks", icon: <TaskIcon /> },
           ].map((item, index) => (
             <ListItem key={index} disablePadding>

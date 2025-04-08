@@ -12,10 +12,13 @@ import {
   Box,
   Typography,
   Grid,
+  Tooltip,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import "../index.css"; // Import your CSS file
+import "../index.css";
 
 const rows = [
   {
@@ -63,37 +66,40 @@ export default function DataTable() {
     setExpandedRow(expandedRow === id ? null : id);
   };
 
+  const handleEdit = (id) => {
+    console.log("Edit clicked for ID:", id);
+    // Add your edit logic here
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this record?")) {
+      console.log("Delete clicked for ID:", id);
+      // Add your delete logic here
+    }
+  };
+
   return (
     <Box className="data-table">
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell className="expand-column" />
+              {/* Original Data Columns */}
               <TableCell className="main-column">Community Member</TableCell>
               <TableCell className="main-column">ID Number</TableCell>
               <TableCell className="main-column">Phone</TableCell>
               <TableCell className="main-column">Land Size</TableCell>
               <TableCell className="main-column">Community</TableCell>
+              {/* New Action Column */}
+              <TableCell className="action-column">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map((row) => (
               <React.Fragment key={row.id}>
                 {/* Main Row */}
-                <TableRow>
-                  <TableCell className="expand-column">
-                    <IconButton
-                      size="small"
-                      onClick={() => handleExpand(row.id)}
-                    >
-                      {expandedRow === row.id ? (
-                        <KeyboardArrowUpIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )}
-                    </IconButton>
-                  </TableCell>
+                <TableRow className="table-row">
+                  {/* Data Cells */}
                   <TableCell className="main-column">
                     {row.communityMember}
                   </TableCell>
@@ -107,12 +113,46 @@ export default function DataTable() {
                   <TableCell className="main-column">
                     {row.communityName}
                   </TableCell>
+                  {/* Action Icons */}
+                  <TableCell className="action-column">
+                    <Tooltip title="View Details">
+                      <IconButton
+                        size="small"
+                        onClick={() => handleExpand(row.id)}
+                        className="table-button"
+                      >
+                        {expandedRow === row.id ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Edit">
+                      <IconButton
+                        size="small"
+                        onClick={() => handleEdit(row.id)}
+                        className="table-button"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDelete(row.id)}
+                        className="table-button"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
                 </TableRow>
 
                 {/* Detail Row */}
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={6} // Matches the new column count (5 data + 1 action)
                     className="detail-panel"
                     sx={{ padding: 0 }}
                   >

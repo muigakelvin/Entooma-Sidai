@@ -25,7 +25,7 @@ const BarChart = ({ labels, data, options }) => {
     labels,
     datasets: [
       {
-        label: "Page Views and Downloads",
+        label: "Registered land per region",
         data,
         backgroundColor: "rgba(25, 118, 210, 0.6)", // Semi-transparent bar color
         borderColor: "#1976D2", // Border color for bars
