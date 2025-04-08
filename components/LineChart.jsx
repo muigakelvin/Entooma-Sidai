@@ -1,105 +1,89 @@
 // src/components/LineChart.jsx
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import React, { useState, useRef } from "react";
+import { LoadScript, GoogleMap, Polyline } from "@react-google-maps/api";
 
-// Register ChartJS components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+const containerStyle = {
+  width: "100%",
+  height: "100%",
+};
 
-const LineChart = ({ labels, data, options }) => {
-  const chartData = {
-    labels,
-    datasets: [
-      {
-        label: "Sessions",
-        data,
-        borderColor: "#1976D2", // Primary line color
-        backgroundColor: "rgba(25, 118, 210, 0.2)", // Gradient-like fill
-        borderWidth: 2,
-        pointRadius: 4, // Size of data points
-        pointHoverRadius: 6, // Larger size on hover
-        pointBackgroundColor: "#1976D2", // Data point color
-        pointBorderColor: "#fff", // Border around data points
-        pointBorderWidth: 2, // Border thickness
-        fill: true, // Enable gradient fill
-      },
-    ],
+const defaultCenter = { lat: 0, lng: 0 };
+
+const LineChart = () => {
+  const [trackPoints, setTrackPoints] = useState([]);
+  const [mapCenter, setMapCenter] = useState(defaultCenter);
+  const mapRef = useRef(null);
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => parseGPX(e.target.result);
+      reader.readAsText(file);
+    }
   };
 
-  const defaultOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: true,
-        position: "top", // Position the legend at the top
-        labels: {
-          font: {
-            size: 14,
-            weight: "bold",
-          },
-          color: "#fff", // White text for dark theme
-        },
-      },
-      tooltip: {
-        enabled: true,
-        mode: "index", // Show tooltips for all datasets at the hovered point
-        intersect: false,
-        backgroundColor: "#1E1E1E", // Dark background for tooltips
-        titleColor: "#fff", // White title text
-        bodyColor: "#fff", // White body text
-        borderColor: "#3A3A3A", // Tooltip border color
-        borderWidth: 1,
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          color: "rgba(255, 255, 255, 0.1)", // Subtle grid lines
-        },
-        ticks: {
-          color: "#fff", // White axis labels
-          font: {
-            size: 12,
-          },
-        },
-      },
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: "rgba(255, 255, 255, 0.1)", // Subtle grid lines
-        },
-        ticks: {
-          color: "#fff", // White axis labels
-          font: {
-            size: 12,
-          },
-        },
-      },
-    },
-    animation: {
-      duration: 1000, // Smooth animation duration
-      easing: "easeInOutQuad", // Smooth easing effect
-    },
+  const parseGPX = (text) => {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(text, "application/xml");
+
+    const trackPointsData = Array.from(
+      xmlDoc.getElementsByTagName("trkpt")
+    ).map((point) => ({
+      lat: parseFloat(point.getAttribute("lat")),
+      lng: parseFloat(point.getAttribute("lon")),
+    }));
+
+    setTrackPoints(trackPointsData);
+
+    if (trackPointsData.length > 0) {
+      setMapCenter(trackPointsData[0]);
+      adjustMapBounds(trackPointsData);
+    }
   };
 
-  return <Line data={chartData} options={{ ...defaultOptions, ...options }} />;
+  const adjustMapBounds = (trackPointsData) => {
+    if (!mapRef.current) return;
+    const bounds = new window.google.maps.LatLngBounds();
+    trackPointsData.forEach((point) => bounds.extend(point));
+    mapRef.current.fitBounds(bounds);
+    mapRef.current.setZoom(mapRef.current.getZoom() - 1);
+  };
+
+  const onLoad = (mapInstance) => {
+    mapRef.current = mapInstance;
+  };
+
+  return (
+    <div className="map-container">
+      <input
+        type="file"
+        accept=".gpx"
+        onChange={handleFileUpload}
+        className="file-input"
+      />
+      <LoadScript googleMapsApiKey="AIzaSyD3er79jHsbfyl_okJYlzlbxRi552w9-1c">
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={mapCenter}
+          zoom={10}
+          onLoad={onLoad}
+          className="gMaps"
+        >
+          {trackPoints.length > 1 && (
+            <Polyline
+              path={trackPoints}
+              options={{
+                strokeColor: "#FF0000",
+                strokeOpacity: 1,
+                strokeWeight: 2,
+              }}
+            />
+          )}
+        </GoogleMap>
+      </LoadScript>
+    </div>
+  );
 };
 
 export default LineChart;

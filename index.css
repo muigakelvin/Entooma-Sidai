@@ -1,61 +1,194 @@
-/* src/index.css */
+/* index.css */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #1e1e1e; /* Dark theme background */
-  color: #fff; /* Light text for contrast */
+  font-family: "Inter", sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+  line-height: 1.6;
 }
 
 .app-container {
   display: flex;
   min-height: 100vh;
+  background-color: #1e1e1e;
 }
 
 .main-content {
   flex: 1;
   padding: 20px;
   background-color: #1e1e1e;
-  color: #fff;
+  color: #e0e0e0;
+  transition: padding 0.3s ease;
 }
 
 .section-title {
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 20px;
+  color: #ffffff;
+  position: relative;
+  padding-left: 20px;
+}
+
+.section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 20px;
+  background-color: #4caf50;
+  border-radius: 2px;
 }
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
 }
 
 .charts-container {
-  display: flex;
-  gap: 20px;
-  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
 }
 
 .chart-wrapper {
-  flex: 1;
-  background-color: #3a3a3a;
+  background-color: #2b2b2b;
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  height: 500px;
 }
 
 .chart-wrapper:hover {
-  transform: scale(1.03);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
-@media (max-width: 768px) {
+.card-header {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #444;
+}
+
+.map-container {
+  height: calc(100% - 60px);
+}
+
+.file-input {
+  margin-bottom: 20px;
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background: #3a3a3a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #e0e0e0;
+}
+
+.gMaps {
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
   .charts-container {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .chart-wrapper {
-    height: auto;
+    min-width: 100%;
   }
+}
+
+/* Add these to your existing DataGrid styles */
+.MuiDataGrid-root {
+  background-color: #1e1e1e !important; /* Match your app's dark theme */
+  border: none !important;
+  color: #e0e0e0 !important;
+}
+
+.MuiDataGrid-row {
+  background-color: #2b2b2b !important; /* Base row color */
+}
+
+.MuiDataGrid-row:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.MuiDataGrid-cell:focus {
+  outline: none !important; /* Remove blue outline on focus */
+}
+
+.MuiDataGrid-columnHeader:focus,
+.MuiDataGrid-cell:focus {
+  outline: none !important;
+}
+
+/* Dark theme styles for Data Table */
+.data-table {
+  background-color: #1e1e1e !important;
+}
+
+.dark-table {
+  background-color: #2b2b2b !important;
+  border: 1px solid #444 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.table-row {
+  background-color: #2b2b2b !important;
+}
+
+.table-row:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.table-cell {
+  color: #e0e0e0 !important;
+  border-bottom: 1px solid #444 !important;
+}
+
+.detail-panel {
+  background-color: #3a3a3a !important;
+  border-top: 1px solid #555 !important;
+}
+
+.dark-detail {
+  background-color: #3a3a3a !important;
+  color: #e0e0e0 !important;
+}
+
+.detail-item {
+  color: #e0e0e0 !important;
+  margin: 8px 0;
+}
+
+.detail-header {
+  color: #4caf50 !important;
+  margin-bottom: 12px;
+}
+
+.table-button {
+  color: #e0e0e0 !important;
+}
+
+.table-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.expand-column {
+  width: 50px !important;
+}
+
+.main-column {
+  width: 15% !important;
 }

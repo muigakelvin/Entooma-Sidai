@@ -1,242 +1,238 @@
-import React, { useState } from "react";
+import * as React from "react";
 import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarColumnsButton,
-  GridToolbarFilterButton,
-  GridToolbarDensitySelector,
-} from "@mui/x-data-grid";
-import {
-  ToggleButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Paper,
+  IconButton,
+  Collapse,
   Box,
   Typography,
-  IconButton,
+  Grid,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Button from "@mui/material/Button";
-import { green, red } from "@mui/material/colors";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import "../index.css"; // Import your CSS file
 
-const DataTable = ({ columns, rows, selectedMember }) => {
-  const [densePadding, setDensePadding] = useState(false);
-  const [selectionModel, setSelectionModel] = useState([]);
+const rows = [
+  {
+    id: 2,
+    communityMember: "Jane Roe",
+    idNumber: "987654321",
+    phoneNumber: "+0987654321",
+    landSize: "30",
+    communityName: "Community B",
+    sublocation: "Subloc B",
+    location: "Loc B",
+    fieldCoordinator: "John Doe",
+    dateSigned: "2023-10-02",
+    signedLocal: "No",
+    signedOrg: "Yes",
+    witnessLocal: "Witness B",
+    loiDocument: "Not Uploaded",
+    gisDetails: "Not Available",
+    mouDocument: "Uploaded",
+  },
+  {
+    id: 1,
+    communityMember: "John Doe",
+    idNumber: "123456789",
+    phoneNumber: "+1234567890",
+    landSize: "50",
+    sublocation: "Subloc A",
+    location: "Loc A",
+    fieldCoordinator: "Jane Smith",
+    dateSigned: "2023-10-01",
+    communityName: "Community A",
+    signedLocal: "Yes",
+    signedOrg: "No",
+    witnessLocal: "Witness A",
+    loiDocument: "Uploaded",
+    gisDetails: "Available",
+    mouDocument: "Not Uploaded",
+  },
+];
 
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "8px",
-          backgroundColor: "#3A3A3A",
-        }}
-      >
-        <Box sx={{ display: "flex", gap: "8px" }}>
-          <GridToolbarColumnsButton
-            sx={{
-              color: "#fff",
-              "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
-            }}
-          />
-          <GridToolbarFilterButton
-            sx={{
-              color: "#fff",
-              "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
-            }}
-          />
-          <GridToolbarDensitySelector
-            sx={{
-              color: "#fff",
-              "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
-            }}
-          />
-        </Box>
-      </GridToolbarContainer>
-    );
-  }
+export default function DataTable() {
+  const [expandedRow, setExpandedRow] = React.useState(null);
 
-  function CustomFooter() {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "8px",
-          backgroundColor: "#3A3A3A",
-          borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-        }}
-      >
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="body2" sx={{ color: "#fff" }}>
-            Rows per page: {rows.length}
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="body2" sx={{ color: "#fff", mr: 1 }}>
-            Dense Padding:
-          </Typography>
-          <ToggleButton
-            value="densePadding"
-            selected={densePadding}
-            onChange={() => setDensePadding(!densePadding)}
-            size="small"
-            color="primary"
-            sx={{
-              color: "#fff",
-              borderColor: "#fff",
-              "&.Mui-selected": {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                color: "#fff",
-                borderColor: "#fff",
-              },
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-              },
-            }}
-          >
-            {densePadding ? "On" : "Off"}
-          </ToggleButton>
-        </Box>
-      </Box>
-    );
-  }
+  const handleExpand = (id) => {
+    setExpandedRow(expandedRow === id ? null : id);
+  };
 
   return (
-    <Paper
-      sx={{
-        width: "100%",
-        overflow: "hidden",
-        bgcolor: "#2B2B2B",
-        borderRadius: "8px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          position: "relative",
-        }}
-      >
-        <div style={{ flexGrow: 1 }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            checkboxSelection
-            disableSelectionOnClick
-            density={densePadding ? "compact" : "standard"}
-            components={{
-              Toolbar: CustomToolbar,
-              Footer: CustomFooter,
-            }}
-            onSelectionModelChange={(newSelectionModel) => {
-              setSelectionModel(newSelectionModel);
-            }}
-            selectionModel={selectionModel}
-            sx={{
-              "& .MuiDataGrid-cell": {
-                color: "#E0E0E0",
-                fontSize: "14px",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
-              },
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: "#3A3A3A",
-                color: "#E0E0E0",
-                fontSize: "14px",
-                fontWeight: 600,
-              },
-              "& .MuiDataGrid-row:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-              },
-              "& .MuiDataGrid-footerContainer": {
-                backgroundColor: "#3A3A3A",
-                borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-              },
-            }}
-          />
-        </div>
-        {selectedMember && (
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: "50%",
-              height: "100%",
-              bgcolor: "#2B2B2B",
-              p: 3,
-              zIndex: 1,
-              borderLeft: "1px solid rgba(255, 255, 255, 0.1)",
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2, color: "#E0E0E0" }}>
-              Member Details
-            </Typography>
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="subtitle2" sx={{ color: "#A0A0A0" }}>
-                  Full Name:
-                </Typography>
-                <Typography sx={{ color: "#E0E0E0" }}>
-                  {selectedMember.fullName}
-                </Typography>
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="subtitle2" sx={{ color: "#A0A0A0" }}>
-                  ID Number:
-                </Typography>
-                <Typography sx={{ color: "#E0E0E0" }}>
-                  {selectedMember.idNumber}
-                </Typography>
-              </Box>
-            </Box>
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: "#A0A0A0" }}>
-                Status:
-              </Typography>
-              <Typography sx={{ color: "#E0E0E0" }}>
-                {selectedMember.status}
-              </Typography>
-            </Box>
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: "#A0A0A0" }}>
-                Cookstove Serial:
-              </Typography>
-              <Typography sx={{ color: "#E0E0E0" }}>
-                {selectedMember.cookstoveSerialNumber}
-              </Typography>
-            </Box>
-            <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
-              <Button
-                variant="contained"
-                color="error"
-                sx={{
-                  bgcolor: "#FF4444",
-                  "&:hover": { bgcolor: "#CC3333" },
-                }}
-              >
-                Reject
-              </Button>
-              <Button
-                variant="contained"
-                color="success"
-                sx={{
-                  bgcolor: "#4CAF50",
-                  "&:hover": { bgcolor: "#45A049" },
-                }}
-              >
-                Approve
-              </Button>
-            </Box>
-          </Box>
-        )}
-      </Box>
-    </Paper>
-  );
-};
+    <Box className="data-table">
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell className="expand-column" />
+              <TableCell className="main-column">Community Member</TableCell>
+              <TableCell className="main-column">ID Number</TableCell>
+              <TableCell className="main-column">Phone</TableCell>
+              <TableCell className="main-column">Land Size</TableCell>
+              <TableCell className="main-column">Community</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <React.Fragment key={row.id}>
+                {/* Main Row */}
+                <TableRow>
+                  <TableCell className="expand-column">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleExpand(row.id)}
+                    >
+                      {expandedRow === row.id ? (
+                        <KeyboardArrowUpIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </TableCell>
+                  <TableCell className="main-column">
+                    {row.communityMember}
+                  </TableCell>
+                  <TableCell className="main-column">{row.idNumber}</TableCell>
+                  <TableCell className="main-column">
+                    {row.phoneNumber}
+                  </TableCell>
+                  <TableCell className="main-column">
+                    {row.landSize} acres
+                  </TableCell>
+                  <TableCell className="main-column">
+                    {row.communityName}
+                  </TableCell>
+                </TableRow>
 
-export default DataTable;
+                {/* Detail Row */}
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="detail-panel"
+                    sx={{ padding: 0 }}
+                  >
+                    <Collapse
+                      in={expandedRow === row.id}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <Box className="detail-sections">
+                        <Grid container spacing={3}>
+                          {/* Location Section */}
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="h6" className="detail-header">
+                              Location Details
+                            </Typography>
+                            <div className="detail-item">
+                              <span className="detail-label">Sublocation:</span>
+                              <span className="detail-value">
+                                {row.sublocation}
+                              </span>
+                            </div>
+                            <div className="detail-item">
+                              <span className="detail-label">Location:</span>
+                              <span className="detail-value">
+                                {row.location}
+                              </span>
+                            </div>
+                            <div className="detail-item">
+                              <span className="detail-label">
+                                Field Coordinator:
+                              </span>
+                              <span className="detail-value">
+                                {row.fieldCoordinator}
+                              </span>
+                            </div>
+                          </Grid>
+
+                          {/* Documentation Section */}
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="h6" className="detail-header">
+                              Documentation
+                            </Typography>
+                            <div className="detail-item">
+                              <span className="detail-label">Date Signed:</span>
+                              <span className="detail-value">
+                                {row.dateSigned}
+                              </span>
+                            </div>
+                            <div className="detail-item">
+                              <span className="detail-label">Witness:</span>
+                              <span className="detail-value">
+                                {row.witnessLocal}
+                              </span>
+                            </div>
+                            <div className="detail-item">
+                              <span className="detail-label">GIS Details:</span>
+                              <span className="detail-value">
+                                {row.gisDetails}
+                              </span>
+                            </div>
+                          </Grid>
+
+                          {/* Approval Status Section */}
+                          <Grid item xs={12}>
+                            <Typography variant="h6" className="detail-header">
+                              Approval Status
+                            </Typography>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} sm={6}>
+                                <div className="detail-item">
+                                  <span className="detail-label">
+                                    Signed Local:
+                                  </span>
+                                  <span className="detail-value">
+                                    {row.signedLocal}
+                                  </span>
+                                </div>
+                              </Grid>
+                              <Grid item xs={12} sm={6}>
+                                <div className="detail-item">
+                                  <span className="detail-label">
+                                    Signed Org:
+                                  </span>
+                                  <span className="detail-value">
+                                    {row.signedOrg}
+                                  </span>
+                                </div>
+                              </Grid>
+                              <Grid item xs={12} sm={6}>
+                                <div className="detail-item">
+                                  <span className="detail-label">
+                                    LOI Document:
+                                  </span>
+                                  <span className="detail-value">
+                                    {row.loiDocument}
+                                  </span>
+                                </div>
+                              </Grid>
+                              <Grid item xs={12} sm={6}>
+                                <div className="detail-item">
+                                  <span className="detail-label">
+                                    MOU Document:
+                                  </span>
+                                  <span className="detail-value">
+                                    {row.mouDocument}
+                                  </span>
+                                </div>
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+}

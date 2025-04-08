@@ -1,19 +1,14 @@
-import React, { useState } from "react";
-import Header from "./components/Header";
-import Sidebar from "./components/SideBar";
-import CardComponent from "./components/Card";
-import LineChart from "./components/LineChart";
-import BarChart from "./components/BarChart";
-import DataTable from "./components/DataTable";
-import { Box, IconButton } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+// src/App.jsx
+import React from "react";
+import Header from "./components/Header.jsx";
+import Sidebar from "./components/SideBar.jsx";
+import CardComponent from "./components/Card.jsx";
+import LineChart from "./components/LineChart.jsx";
+import BarChart from "./components/BarChart.jsx";
+import DataTable from "./components/DataTable"; // Import the new DataTable component
 import "./index.css";
 
 const App = () => {
-  const [selectedMember, setSelectedMember] = useState(null);
-
   const cardsData = [
     { title: "LandOwners", value: "14k", change: 25, subtitle: "Last 30 days" },
     {
@@ -28,7 +23,7 @@ const App = () => {
       change: 5,
       subtitle: "Last 30 days",
     },
-    { title: "Counties", value: "45", change: 2, subtitle: "Active regions" },
+    { title: "Counties", value: "", change: "", subtitle: "" },
   ];
 
   const lineChartData = {
@@ -41,63 +36,79 @@ const App = () => {
     data: [8000, 10000, 7000, 9000, 11000, 8500, 7500],
   };
 
+  // Columns for the DataGrid
   const tableColumns = [
-    { field: "fullName", headerName: "Full Name", width: 250 },
-    { field: "phoneNumber", headerName: "Phone Number", width: 200 },
-    { field: "idNumber", headerName: "ID Number", width: 150 },
-    { field: "status", headerName: "Status", width: 120 },
+    { field: "communityMember", headerName: "Community Member", width: 150 },
+    { field: "idNumber", headerName: "ID Number", width: 120 },
+    { field: "phoneNumber", headerName: "Phone Number", width: 150 },
+    { field: "landSize", headerName: "Land Size (acres)", width: 150 },
+    { field: "sublocation", headerName: "Sublocation", width: 150 },
+    { field: "location", headerName: "Location", width: 150 },
+    { field: "fieldCoordinator", headerName: "Field Coordinator", width: 150 },
+    { field: "dateSigned", headerName: "Date Signed", width: 150 },
+    { field: "communityName", headerName: "Community Name", width: 150 },
     {
-      field: "actions",
-      headerName: "",
-      sortable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => (
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <IconButton onClick={() => setSelectedMember(params.row)}>
-            <VisibilityIcon sx={{ color: "#fff" }} />
-          </IconButton>
-          <IconButton>
-            <EditIcon sx={{ color: "#fff" }} />
-          </IconButton>
-          <IconButton>
-            <DeleteIcon sx={{ color: "#fff" }} />
-          </IconButton>
-        </Box>
-      ),
-      width: 100,
+      field: "signedLocal",
+      headerName: "Signed On Behalf Of Local",
+      width: 200,
     },
+    {
+      field: "signedOrg",
+      headerName: "Signed On Behalf Of Organisation",
+      width: 250,
+    },
+    { field: "witnessLocal", headerName: "Witness For Local", width: 150 },
+    { field: "loiDocument", headerName: "LOI Document", width: 150 },
+    { field: "gisDetails", headerName: "GIS Details", width: 150 },
+    { field: "mouDocument", headerName: "MOU Document", width: 150 },
   ];
 
+  // Rows for the DataGrid
   const tableRows = [
     {
       id: 1,
-      fullName: "JOHNSON NG'ANG'A KAMAU",
-      phoneNumber: "+254729916580",
-      idNumber: "10881819",
-      status: "Pending",
-      gender: "Male",
-      communityGroup: "KIBUI UNITED SHG",
-      fieldOfficer: "JANE DOE",
-      ambassador: "MARY SMITH",
-      cookstoveSerialNumber: "CS-2023-001",
+      communityMember: "John Doe",
+      idNumber: "123456789",
+      phoneNumber: "+1234567890",
+      landSize: "50",
+      sublocation: "Subloc A",
+      location: "Loc A",
+      fieldCoordinator: "Jane Smith",
+      dateSigned: "2023-10-01",
+      communityName: "Community A",
+      signedLocal: "Yes",
+      signedOrg: "No",
+      witnessLocal: "Witness A",
+      loiDocument: "Uploaded",
+      gisDetails: "Available",
+      mouDocument: "Not Uploaded",
     },
     {
       id: 2,
-      fullName: "GRACE WANJIKU MUMITA",
-      phoneNumber: "+254725134576",
-      idNumber: "5170197",
-      status: "Approved",
-      gender: "Female",
-      communityGroup: "MAUA WENDANI SHG",
-      fieldOfficer: "JOHN DOE",
-      ambassador: "ROBERT KARIUKI",
-      cookstoveSerialNumber: "CS-2023-002",
+      communityMember: "Jane Roe",
+      idNumber: "987654321",
+      phoneNumber: "+0987654321",
+      landSize: "30",
+      sublocation: "Subloc B",
+      location: "Loc B",
+      fieldCoordinator: "John Doe",
+      dateSigned: "2023-10-02",
+      communityName: "Community B",
+      signedLocal: "No",
+      signedOrg: "Yes",
+      witnessLocal: "Witness B",
+      loiDocument: "Not Uploaded",
+      gisDetails: "Not Available",
+      mouDocument: "Uploaded",
     },
   ];
 
   return (
     <div className="app-container">
-      <Sidebar />
+      {/* Sidebar */}
+      {<Sidebar />}
+
+      {/* Main Content */}
       <div className="main-content">
         <Header />
         <section className="overview-section">
@@ -114,36 +125,42 @@ const App = () => {
             ))}
           </div>
         </section>
+
         <section className="charts-section">
           <h2 className="section-title">Analytics</h2>
           <div className="charts-container">
+            {/* Line Chart */}
             <div className="chart-wrapper">
               <LineChart
                 labels={lineChartData.labels}
                 data={lineChartData.data}
                 options={{
-                  scales: { y: { beginAtZero: true } },
+                  scales: {
+                    y: { beginAtZero: true },
+                  },
                 }}
               />
             </div>
+
+            {/* Bar Chart */}
             <div className="chart-wrapper">
               <BarChart
                 labels={barChartData.labels}
                 data={barChartData.data}
                 options={{
-                  scales: { y: { beginAtZero: true } },
+                  scales: {
+                    y: { beginAtZero: true },
+                  },
                 }}
               />
             </div>
           </div>
         </section>
+
         <section className="details-section">
-          <h2 className="section-title">Members</h2>
-          <DataTable
-            columns={tableColumns}
-            rows={tableRows}
-            selectedMember={selectedMember}
-          />
+          <h2 className="section-title">Details</h2>
+          {/* Use the DataTable component */}
+          <DataTable columns={tableColumns} rows={tableRows} />
         </section>
       </div>
     </div>
