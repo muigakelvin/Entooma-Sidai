@@ -7,9 +7,19 @@ import {
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
-import { ToggleButton, Paper, Box, Typography } from "@mui/material";
+import {
+  ToggleButton,
+  Paper,
+  Box,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { green, red } from "@mui/material/colors";
 
-const DataTable = ({ columns, rows }) => {
+const DataTable = ({ onRowClick, selectedMember }) => {
   const [densePadding, setDensePadding] = useState(false);
   const [selectionModel, setSelectionModel] = useState([]);
 
@@ -100,6 +110,52 @@ const DataTable = ({ columns, rows }) => {
     );
   }
 
+  // Sample data (replace with actual data)
+  const rows = [
+    {
+      id: 1,
+      fullName: "JOHNSON NG'ANG'A KAMAU",
+      phoneNumber: "+254729916580",
+      idNumber: "10881819",
+      status: "Pending",
+    },
+    {
+      id: 2,
+      fullName: "GRACE WANJIKU MUMITA",
+      phoneNumber: "+254725134576",
+      idNumber: "5170197",
+      status: "Pending",
+    },
+    // Add more sample data...
+  ];
+
+  const columns = [
+    { field: "fullName", headerName: "Full Name", width: 250 },
+    { field: "phoneNumber", headerName: "Phone Number", width: 200 },
+    { field: "idNumber", headerName: "ID Number", width: 150 },
+    { field: "status", headerName: "Status", width: 120 },
+    {
+      field: "actions",
+      headerName: "",
+      sortable: false,
+      disableColumnMenu: true,
+      renderCell: (params) => (
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <IconButton onClick={() => onRowClick(params.row)}>
+            <VisibilityIcon sx={{ color: "#fff" }} />
+          </IconButton>
+          <IconButton>
+            <EditIcon sx={{ color: "#fff" }} />
+          </IconButton>
+          <IconButton>
+            <DeleteIcon sx={{ color: "#fff" }} />
+          </IconButton>
+        </Box>
+      ),
+      width: 100,
+    },
+  ];
+
   return (
     <Paper
       sx={{
@@ -160,6 +216,64 @@ const DataTable = ({ columns, rows }) => {
             }}
           />
         </div>
+
+        {/* Detailed View Panel */}
+        {selectedMember && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: "50%",
+              height: "100%",
+              bgcolor: "#2B2B2B",
+              p: 3,
+              zIndex: 1,
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Member Details
+            </Typography>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography>Full Name:</Typography>
+                <Typography>{selectedMember.fullName}</Typography>
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography>ID Number:</Typography>
+                <Typography>{selectedMember.idNumber}</Typography>
+              </Box>
+            </Box>
+            {/* Add more details... */}
+
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="h6">Cookstove Details</Typography>
+              {/* Add cookstove details... */}
+            </Box>
+
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="h6">Payments</Typography>
+              {/* Add payments section... */}
+            </Box>
+
+            <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+              <Button
+                variant="contained"
+                color="error"
+                sx={{ bgcolor: red[500], "&:hover": { bgcolor: red[700] } }}
+              >
+                Reject
+              </Button>
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ bgcolor: green[500], "&:hover": { bgcolor: green[700] } }}
+              >
+                Approve
+              </Button>
+            </Box>
+          </Box>
+        )}
       </Box>
     </Paper>
   );
