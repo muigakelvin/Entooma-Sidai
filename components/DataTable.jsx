@@ -1,4 +1,3 @@
-// src/components/DataTable.jsx
 import React, { useState } from "react";
 import {
   DataGrid,
@@ -14,16 +13,16 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import Button from "@mui/material/Button";
 import { green, red } from "@mui/material/colors";
 
-const DataTable = ({ onRowClick, selectedMember }) => {
+const DataTable = ({ columns, rows, selectedMember }) => {
   const [densePadding, setDensePadding] = useState(false);
   const [selectionModel, setSelectionModel] = useState([]);
 
-  // Custom Toolbar for additional controls
   function CustomToolbar() {
     return (
       <GridToolbarContainer
@@ -34,7 +33,6 @@ const DataTable = ({ onRowClick, selectedMember }) => {
           backgroundColor: "#3A3A3A",
         }}
       >
-        {/* Left-aligned toolbar buttons */}
         <Box sx={{ display: "flex", gap: "8px" }}>
           <GridToolbarColumnsButton
             sx={{
@@ -59,7 +57,6 @@ const DataTable = ({ onRowClick, selectedMember }) => {
     );
   }
 
-  // Custom Footer with Pagination and Dense Padding Toggle
   function CustomFooter() {
     return (
       <Box
@@ -72,14 +69,11 @@ const DataTable = ({ onRowClick, selectedMember }) => {
           borderTop: "1px solid rgba(255, 255, 255, 0.2)",
         }}
       >
-        {/* Pagination Controls */}
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="body2" sx={{ color: "#fff" }}>
             Rows per page: {rows.length}
           </Typography>
         </Box>
-
-        {/* Dense Padding Toggle Button */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography variant="body2" sx={{ color: "#fff", mr: 1 }}>
             Dense Padding:
@@ -110,52 +104,6 @@ const DataTable = ({ onRowClick, selectedMember }) => {
     );
   }
 
-  // Sample data (replace with actual data)
-  const rows = [
-    {
-      id: 1,
-      fullName: "JOHNSON NG'ANG'A KAMAU",
-      phoneNumber: "+254729916580",
-      idNumber: "10881819",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      fullName: "GRACE WANJIKU MUMITA",
-      phoneNumber: "+254725134576",
-      idNumber: "5170197",
-      status: "Pending",
-    },
-    // Add more sample data...
-  ];
-
-  const columns = [
-    { field: "fullName", headerName: "Full Name", width: 250 },
-    { field: "phoneNumber", headerName: "Phone Number", width: 200 },
-    { field: "idNumber", headerName: "ID Number", width: 150 },
-    { field: "status", headerName: "Status", width: 120 },
-    {
-      field: "actions",
-      headerName: "",
-      sortable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => (
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <IconButton onClick={() => onRowClick(params.row)}>
-            <VisibilityIcon sx={{ color: "#fff" }} />
-          </IconButton>
-          <IconButton>
-            <EditIcon sx={{ color: "#fff" }} />
-          </IconButton>
-          <IconButton>
-            <DeleteIcon sx={{ color: "#fff" }} />
-          </IconButton>
-        </Box>
-      ),
-      width: 100,
-    },
-  ];
-
   return (
     <Paper
       sx={{
@@ -166,7 +114,6 @@ const DataTable = ({ onRowClick, selectedMember }) => {
         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
       }}
     >
-      {/* Container for Table and Footer */}
       <Box
         sx={{
           display: "flex",
@@ -175,17 +122,16 @@ const DataTable = ({ onRowClick, selectedMember }) => {
           position: "relative",
         }}
       >
-        {/* Data Grid */}
         <div style={{ flexGrow: 1 }}>
           <DataGrid
             rows={rows}
             columns={columns}
             checkboxSelection
             disableSelectionOnClick
-            density={densePadding ? "compact" : "standard"} // Apply dense padding
+            density={densePadding ? "compact" : "standard"}
             components={{
               Toolbar: CustomToolbar,
-              Footer: CustomFooter, // Replace the default footer
+              Footer: CustomFooter,
             }}
             onSelectionModelChange={(newSelectionModel) => {
               setSelectionModel(newSelectionModel);
@@ -193,31 +139,26 @@ const DataTable = ({ onRowClick, selectedMember }) => {
             selectionModel={selectionModel}
             sx={{
               "& .MuiDataGrid-cell": {
-                color: "#fff",
+                color: "#E0E0E0",
                 fontSize: "14px",
-                fontWeight: "500",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+                borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
               },
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: "#3A3A3A",
-                color: "#fff",
+                color: "#E0E0E0",
                 fontSize: "14px",
-                fontWeight: "bold",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
+                fontWeight: 600,
               },
               "& .MuiDataGrid-row:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
               },
               "& .MuiDataGrid-footerContainer": {
                 backgroundColor: "#3A3A3A",
-                color: "#fff",
                 borderTop: "1px solid rgba(255, 255, 255, 0.2)",
               },
             }}
           />
         </div>
-
-        {/* Detailed View Panel */}
         {selectedMember && (
           <Box
             sx={{
@@ -229,45 +170,64 @@ const DataTable = ({ onRowClick, selectedMember }) => {
               bgcolor: "#2B2B2B",
               p: 3,
               zIndex: 1,
+              borderLeft: "1px solid rgba(255, 255, 255, 0.1)",
             }}
           >
-            <Typography variant="h6" sx={{ mb: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2, color: "#E0E0E0" }}>
               Member Details
             </Typography>
             <Box sx={{ display: "flex", gap: 2 }}>
               <Box sx={{ flex: 1 }}>
-                <Typography>Full Name:</Typography>
-                <Typography>{selectedMember.fullName}</Typography>
+                <Typography variant="subtitle2" sx={{ color: "#A0A0A0" }}>
+                  Full Name:
+                </Typography>
+                <Typography sx={{ color: "#E0E0E0" }}>
+                  {selectedMember.fullName}
+                </Typography>
               </Box>
               <Box sx={{ flex: 1 }}>
-                <Typography>ID Number:</Typography>
-                <Typography>{selectedMember.idNumber}</Typography>
+                <Typography variant="subtitle2" sx={{ color: "#A0A0A0" }}>
+                  ID Number:
+                </Typography>
+                <Typography sx={{ color: "#E0E0E0" }}>
+                  {selectedMember.idNumber}
+                </Typography>
               </Box>
             </Box>
-            {/* Add more details... */}
-
             <Box sx={{ mt: 2 }}>
-              <Typography variant="h6">Cookstove Details</Typography>
-              {/* Add cookstove details... */}
+              <Typography variant="subtitle2" sx={{ color: "#A0A0A0" }}>
+                Status:
+              </Typography>
+              <Typography sx={{ color: "#E0E0E0" }}>
+                {selectedMember.status}
+              </Typography>
             </Box>
-
             <Box sx={{ mt: 2 }}>
-              <Typography variant="h6">Payments</Typography>
-              {/* Add payments section... */}
+              <Typography variant="subtitle2" sx={{ color: "#A0A0A0" }}>
+                Cookstove Serial:
+              </Typography>
+              <Typography sx={{ color: "#E0E0E0" }}>
+                {selectedMember.cookstoveSerialNumber}
+              </Typography>
             </Box>
-
             <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
               <Button
                 variant="contained"
                 color="error"
-                sx={{ bgcolor: red[500], "&:hover": { bgcolor: red[700] } }}
+                sx={{
+                  bgcolor: "#FF4444",
+                  "&:hover": { bgcolor: "#CC3333" },
+                }}
               >
                 Reject
               </Button>
               <Button
                 variant="contained"
                 color="success"
-                sx={{ bgcolor: green[500], "&:hover": { bgcolor: green[700] } }}
+                sx={{
+                  bgcolor: "#4CAF50",
+                  "&:hover": { bgcolor: "#45A049" },
+                }}
               >
                 Approve
               </Button>
