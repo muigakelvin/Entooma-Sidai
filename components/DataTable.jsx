@@ -17,10 +17,6 @@ import {
   TextField,
   Button,
   InputAdornment,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Select,
   MenuItem,
   FormControl,
@@ -38,6 +34,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import AddFormDialog from "./AddFormDialog"; // Import the AddFormDialog component
 import "../index.css";
 
 const initialRows = [
@@ -110,13 +107,11 @@ export default function DataTable() {
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
-
     const filtered = rows.filter((row) =>
       Object.values(row).some((value) =>
         String(value).toLowerCase().includes(term)
       )
     );
-
     setFilteredRows(filtered);
   };
 
@@ -159,7 +154,6 @@ export default function DataTable() {
       landSize: `${formData.landSize} acres`,
       dateSigned: formData.dateSigned?.format("YYYY-MM-DD") || "",
     };
-
     setRows([...rows, newRow]);
     setFilteredRows([...filteredRows, newRow]);
     handleCloseForm();
@@ -270,7 +264,6 @@ export default function DataTable() {
                     </Tooltip>
                   </TableCell>
                 </TableRow>
-
                 {/* Detail Row */}
                 <TableRow>
                   <TableCell
@@ -317,7 +310,6 @@ export default function DataTable() {
                             </div>
                           </CardContent>
                         </Card>
-
                         {/* Documentation Card */}
                         <Card
                           variant="outlined"
@@ -349,7 +341,6 @@ export default function DataTable() {
                             </div>
                           </CardContent>
                         </Card>
-
                         {/* Approval Status Card */}
                         <Card
                           variant="outlined"
@@ -416,32 +407,13 @@ export default function DataTable() {
       </TableContainer>
 
       {/* Add Form Dialog */}
-      <Dialog
+      <AddFormDialog
         open={isFormOpen}
         onClose={handleCloseForm}
-        className="dark-dialog"
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogTitle>Add New Record</DialogTitle>
-        <DialogContent>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box component="form" sx={{ mt: 2 }}>
-              <Grid container spacing={2}>
-                {/* Form fields remain unchanged */}
-              </Grid>
-            </Box>
-          </LocalizationProvider>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseForm} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            Add Record
-          </Button>
-        </DialogActions>
-      </Dialog>
+        formData={formData}
+        onFormChange={handleFormChange}
+        onSubmit={handleSubmit}
+      />
     </Box>
   );
 }
