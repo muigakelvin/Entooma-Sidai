@@ -209,6 +209,8 @@ export default function DataTable() {
               <TableCell className="main-column">Phone</TableCell>
               <TableCell className="main-column">Land Size</TableCell>
               <TableCell className="main-column">Community</TableCell>
+              {/* New Column for Location */}
+              <TableCell className="main-column">Location</TableCell>
               <TableCell className="action-column">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -230,6 +232,8 @@ export default function DataTable() {
                   <TableCell className="main-column">
                     {row.communityName}
                   </TableCell>
+                  {/* New Cell for Location */}
+                  <TableCell className="main-column">{row.location}</TableCell>
                   <TableCell className="action-column">
                     <Tooltip title="View Details">
                       <IconButton
@@ -267,7 +271,7 @@ export default function DataTable() {
                 {/* Detail Row */}
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={7} // Updated to account for the new column
                     className="detail-panel"
                     sx={{ padding: 0 }}
                   >
@@ -277,39 +281,7 @@ export default function DataTable() {
                       unmountOnExit
                     >
                       <Box className="card-container">
-                        {/* Location Card */}
-                        <Card
-                          variant="outlined"
-                          className={`detail-card ${
-                            expandedRow === row.id ? "active-card" : ""
-                          }`}
-                        >
-                          <CardContent>
-                            <Typography variant="h6" className="detail-header">
-                              Location Details
-                            </Typography>
-                            <div className="detail-item">
-                              <span className="detail-label">Sublocation:</span>
-                              <span className="detail-value">
-                                {row.sublocation}
-                              </span>
-                            </div>
-                            <div className="detail-item">
-                              <span className="detail-label">Location:</span>
-                              <span className="detail-value">
-                                {row.location}
-                              </span>
-                            </div>
-                            <div className="detail-item">
-                              <span className="detail-label">
-                                Field Coordinator:
-                              </span>
-                              <span className="detail-value">
-                                {row.fieldCoordinator}
-                              </span>
-                            </div>
-                          </CardContent>
-                        </Card>
+                        {/* Location Card (now partially visible, so remove it here) */}
                         {/* Documentation Card */}
                         <Card
                           variant="outlined"
