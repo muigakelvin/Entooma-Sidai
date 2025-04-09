@@ -259,3 +259,94 @@ body {
 .table-button:hover {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
+/* 
+Table buttons, search and filter */
+
+/* Updated components styling */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0 20px;
+}
+
+.search-bar {
+  flex: 1;
+  max-width: 300px;
+  background: #3a3a3a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #e0e0e0;
+  min-height: 40px; /* Reduced height */
+}
+
+.search-bar .MuiOutlinedInput-root {
+  color: #e0e0e0;
+  border-color: #555;
+  padding: 6px; /* Reduced padding */
+}
+
+.search-bar .MuiOutlinedInput-input {
+  padding: 6px 12px; /* Adjust input padding */
+}
+
+.search-bar .MuiOutlinedInput-notchedOutline {
+  border-color: #555 !important;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 24px; /* Increased space between buttons */
+}
+
+.action-buttons .MuiButton-containedPrimary {
+  background-color: #4caf50 !important;
+  color: white !important;
+  padding: 6px 16px; /* Reduced vertical padding */
+  border-radius: 4px;
+  min-height: 36px; /* Match reduced search bar height */
+}
+
+.action-buttons .MuiButton-containedPrimary:hover {
+  background-color: #45a049 !important;
+}
+
+.filter-icon {
+  color: #e0e0e0;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.filter-icon:hover {
+  color: #ffffff;
+}
+
+/* Existing styles */
+.detail-panel {
+  background-color: #2b2b2b !important;
+  border-top: 2px solid #444 !important;
+}
+
+.detail-header {
+  color: #4caf50 !important;
+}
+
+.detail-label {
+  color: #e0e0e0;
+}
+
+.detail-value {
+  color: #e0e0e0;
+  word-break: break-word;
+}
+
+.table-button {
+  color: #e0e0e0 !important;
+}
+
+.table-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}

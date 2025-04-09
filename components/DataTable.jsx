@@ -13,14 +13,19 @@ import {
   Typography,
   Grid,
   Tooltip,
+  TextField,
+  Button,
+  InputAdornment,
+  Icon,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import "../index.css";
 
-const rows = [
+const initialRows = [
   {
     id: 2,
     communityMember: "Jane Roe",
@@ -61,25 +66,72 @@ const rows = [
 
 export default function DataTable() {
   const [expandedRow, setExpandedRow] = React.useState(null);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [filteredRows, setFilteredRows] = React.useState(initialRows);
 
   const handleExpand = (id) => {
     setExpandedRow(expandedRow === id ? null : id);
   };
 
-  const handleEdit = (id) => {
-    console.log("Edit clicked for ID:", id);
-    // Add your edit logic here
+  const handleSearch = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filtered = initialRows.filter((row) =>
+      Object.values(row).some((value) =>
+        String(value).toLowerCase().includes(term)
+      )
+    );
+
+    setFilteredRows(filtered);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this record?")) {
-      console.log("Delete clicked for ID:", id);
-      // Add your delete logic here
-    }
+  const handleAddIndividual = () => {
+    console.log("Add Individual clicked");
+    // Add your implementation here
+  };
+
+  const handleAddRepresentative = () => {
+    console.log("Add Representative clicked");
+    // Add your implementation here
   };
 
   return (
     <Box className="data-table">
+      {/* New Header Section */}
+      <Box className="table-header">
+        <TextField
+          label="Search"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearch}
+          className="search-bar"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <FilterListIcon className="filter-icon" />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Box className="action-buttons">
+          <Button
+            variant="contained"
+            onClick={handleAddIndividual}
+            className="add-button"
+          >
+            Add Individual
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleAddRepresentative}
+            className="add-button"
+          >
+            Add Representative
+          </Button>
+        </Box>
+      </Box>
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -90,12 +142,12 @@ export default function DataTable() {
               <TableCell className="main-column">Phone</TableCell>
               <TableCell className="main-column">Land Size</TableCell>
               <TableCell className="main-column">Community</TableCell>
-              {/* New Action Column */}
+              {/* Action Column */}
               <TableCell className="action-column">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {filteredRows.map((row) => (
               <React.Fragment key={row.id}>
                 {/* Main Row */}
                 <TableRow className="table-row">
@@ -152,7 +204,7 @@ export default function DataTable() {
                 {/* Detail Row */}
                 <TableRow>
                   <TableCell
-                    colSpan={6} // Matches the new column count (5 data + 1 action)
+                    colSpan={6} // 5 data columns + 1 action column
                     className="detail-panel"
                     sx={{ padding: 0 }}
                   >
@@ -161,7 +213,7 @@ export default function DataTable() {
                       timeout="auto"
                       unmountOnExit
                     >
-                      <Box className="detail-sections">
+                      <Box className="detail-sections dark-detail">
                         <Grid container spacing={3}>
                           {/* Location Section */}
                           <Grid item xs={12} sm={6}>
