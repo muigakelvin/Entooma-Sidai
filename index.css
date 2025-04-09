@@ -485,3 +485,71 @@ Table buttons, search and filter */
   color: #ff4444 !important;
   border-color: #ff4444 !important;
 }
+/* New card styles */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px;
+}
+
+.detail-card {
+  flex: 1 1 48%;
+  background-color: #2b2b2b;
+  border-color: #444;
+  transition: all 0.3s ease;
+  margin: 8px 0;
+}
+
+.detail-card.active-card {
+  border-color: #4caf50;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transform: translateX(10px);
+}
+
+.detail-card .MuiCardContent-root {
+  padding: 16px !important;
+}
+
+.detail-card .detail-header {
+  margin-bottom: 12px;
+}
+
+.detail-card .detail-item {
+  margin-bottom: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .detail-card {
+    flex: 1 1 100%;
+  }
+}
+
+/* Existing styles remain */
+.detail-panel {
+  background-color: #2b2b2b !important;
+  border-top: 2px solid #444 !important;
+}
+
+.detail-header {
+  color: #4caf50 !important;
+}
+
+.detail-label {
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #e0e0e0;
+  word-break: break-word;
+}
+
+.table-button {
+  color: #e0e0e0 !important;
+}
+
+.table-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
