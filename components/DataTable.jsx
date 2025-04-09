@@ -1,3 +1,4 @@
+// src/components/DataTable.jsx
 import * as React from "react";
 import {
   Table,
@@ -16,13 +17,24 @@ import {
   TextField,
   Button,
   InputAdornment,
-  Icon,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import AddIcon from "@mui/icons-material/Add";
+import { DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import "../index.css";
 
 const initialRows = [
@@ -67,7 +79,26 @@ const initialRows = [
 export default function DataTable() {
   const [expandedRow, setExpandedRow] = React.useState(null);
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [rows, setRows] = React.useState(initialRows);
   const [filteredRows, setFilteredRows] = React.useState(initialRows);
+  const [isFormOpen, setIsFormOpen] = React.useState(false);
+  const [formData, setFormData] = React.useState({
+    communityMember: "",
+    idNumber: "",
+    phoneNumber: "",
+    landSize: "",
+    sublocation: "",
+    location: "",
+    fieldCoordinator: "",
+    dateSigned: null,
+    communityName: "",
+    signedLocal: "",
+    signedOrg: "",
+    witnessLocal: "",
+    loiDocument: "",
+    gisDetails: "",
+    mouDocument: "",
+  });
 
   const handleExpand = (id) => {
     setExpandedRow(expandedRow === id ? null : id);
@@ -77,7 +108,7 @@ export default function DataTable() {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
 
-    const filtered = initialRows.filter((row) =>
+    const filtered = rows.filter((row) =>
       Object.values(row).some((value) =>
         String(value).toLowerCase().includes(term)
       )
@@ -86,23 +117,59 @@ export default function DataTable() {
     setFilteredRows(filtered);
   };
 
-  const handleAddIndividual = () => {
-    console.log("Add Individual clicked");
-    // Add your implementation here
+  const handleOpenForm = () => {
+    setIsFormOpen(true);
   };
 
-  const handleAddRepresentative = () => {
-    console.log("Add Representative clicked");
-    // Add your implementation here
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setFormData({
+      communityMember: "",
+      idNumber: "",
+      phoneNumber: "",
+      landSize: "",
+      sublocation: "",
+      location: "",
+      fieldCoordinator: "",
+      dateSigned: null,
+      communityName: "",
+      signedLocal: "",
+      signedOrg: "",
+      witnessLocal: "",
+      loiDocument: "",
+      gisDetails: "",
+      mouDocument: "",
+    });
+  };
+
+  const handleFormChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = () => {
+    const newRow = {
+      id: Date.now(),
+      ...formData,
+      landSize: `${formData.landSize} acres`,
+      dateSigned: formData.dateSigned.format("YYYY-MM-DD"),
+    };
+
+    setRows([...rows, newRow]);
+    setFilteredRows([...filteredRows, newRow]);
+    handleCloseForm();
   };
 
   return (
     <Box className="data-table">
-      {/* New Header Section */}
+      {/* Header Section */}
       <Box className="table-header">
         <TextField
           label="Search"
           variant="outlined"
+          size="small"
           value={searchTerm}
           onChange={handleSearch}
           className="search-bar"
@@ -115,34 +182,36 @@ export default function DataTable() {
           }}
         />
         <Box className="action-buttons">
+          <AddIcon sx={{ color: "#4caf50", fontSize: 32, marginRight: 1 }} />
           <Button
             variant="contained"
-            onClick={handleAddIndividual}
+            onClick={handleOpenForm}
             className="add-button"
+            startIcon={<AddIcon />}
           >
-            Add Individual
+            Individual
           </Button>
           <Button
             variant="contained"
-            onClick={handleAddRepresentative}
+            onClick={handleOpenForm}
             className="add-button"
+            startIcon={<AddIcon />}
           >
-            Add Representative
+            Representative
           </Button>
         </Box>
       </Box>
 
+      {/* Table Content */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              {/* Original Data Columns */}
               <TableCell className="main-column">Community Member</TableCell>
               <TableCell className="main-column">ID Number</TableCell>
               <TableCell className="main-column">Phone</TableCell>
               <TableCell className="main-column">Land Size</TableCell>
               <TableCell className="main-column">Community</TableCell>
-              {/* Action Column */}
               <TableCell className="action-column">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -151,7 +220,6 @@ export default function DataTable() {
               <React.Fragment key={row.id}>
                 {/* Main Row */}
                 <TableRow className="table-row">
-                  {/* Data Cells */}
                   <TableCell className="main-column">
                     {row.communityMember}
                   </TableCell>
@@ -165,7 +233,6 @@ export default function DataTable() {
                   <TableCell className="main-column">
                     {row.communityName}
                   </TableCell>
-                  {/* Action Icons */}
                   <TableCell className="action-column">
                     <Tooltip title="View Details">
                       <IconButton
@@ -204,7 +271,7 @@ export default function DataTable() {
                 {/* Detail Row */}
                 <TableRow>
                   <TableCell
-                    colSpan={6} // 5 data columns + 1 action column
+                    colSpan={6}
                     className="detail-panel"
                     sx={{ padding: 0 }}
                   >
@@ -325,6 +392,247 @@ export default function DataTable() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Add Form Dialog */}
+      <Dialog
+        open={isFormOpen}
+        onClose={handleCloseForm}
+        className="dark-dialog"
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>Add New Record</DialogTitle>
+        <DialogContent>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Box component="form" sx={{ mt: 2 }}>
+              <Grid container spacing={2}>
+                {/* Community Member */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="communityMember"
+                    label="Community Member"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.communityMember}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* ID Number */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="idNumber"
+                    label="ID Number"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.idNumber}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* Phone Number */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="phoneNumber"
+                    label="Phone Number"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.phoneNumber}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* Land Size */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="landSize"
+                    label="Land Size (acres)"
+                    type="number"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.landSize}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* Sublocation */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="sublocation"
+                    label="Sublocation"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.sublocation}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* Location */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="location"
+                    label="Location"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.location}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* Field Coordinator */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="fieldCoordinator"
+                    label="Field Coordinator"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.fieldCoordinator}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* Date Signed */}
+                <Grid item xs={12}>
+                  <DatePicker
+                    label="Date Signed"
+                    value={formData.dateSigned}
+                    onChange={(date) =>
+                      setFormData({ ...formData, dateSigned: date })
+                    }
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth size="small" required />
+                    )}
+                  />
+                </Grid>
+
+                {/* Community Name */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="communityName"
+                    label="Community Name"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.communityName}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* Signed Local */}
+                <Grid item xs={12}>
+                  <FormControl fullWidth size="small" required>
+                    <InputLabel>Signed Local</InputLabel>
+                    <Select
+                      name="signedLocal"
+                      value={formData.signedLocal}
+                      onChange={handleFormChange}
+                      label="Signed Local"
+                    >
+                      <MenuItem value="Yes">Yes</MenuItem>
+                      <MenuItem value="No">No</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                {/* Signed Org */}
+                <Grid item xs={12}>
+                  <FormControl fullWidth size="small" required>
+                    <InputLabel>Signed Org</InputLabel>
+                    <Select
+                      name="signedOrg"
+                      value={formData.signedOrg}
+                      onChange={handleFormChange}
+                      label="Signed Org"
+                    >
+                      <MenuItem value="Yes">Yes</MenuItem>
+                      <MenuItem value="No">No</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                {/* Witness Local */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="witnessLocal"
+                    label="Witness Local"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.witnessLocal}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* LOI Document */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="loiDocument"
+                    label="LOI Document"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.loiDocument}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* GIS Details */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="gisDetails"
+                    label="GIS Details"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.gisDetails}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+
+                {/* MOU Document */}
+                <Grid item xs={12}>
+                  <TextField
+                    name="mouDocument"
+                    label="MOU Document"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value={formData.mouDocument}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+          </LocalizationProvider>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseForm} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">
+            Add Record
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

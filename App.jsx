@@ -19,11 +19,11 @@ const App = () => {
     },
     {
       title: "Subcounties",
-      value: "200k",
+      value: "200",
       change: 5,
       subtitle: "Last 30 days",
     },
-    { title: "Counties", value: "", change: "", subtitle: "" },
+    { title: "Counties", value: "50", change: "20", subtitle: "Last 30 days" },
   ];
 
   const MapData = {
