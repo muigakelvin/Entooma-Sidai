@@ -25,7 +25,9 @@ export default function AddFormDialog({
 }) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Add New Record</DialogTitle>
+      <DialogTitle>
+        {formData.id ? "Edit Record" : "Add New Record"}
+      </DialogTitle>
       <DialogContent>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Box component="form" sx={{ mt: 2 }}>
@@ -215,7 +217,7 @@ export default function AddFormDialog({
           Cancel
         </Button>
         <Button onClick={onSubmit} variant="contained" color="primary">
-          Add Record
+          {formData.id ? "Update Record" : "Add Record"}
         </Button>
       </DialogActions>
     </Dialog>

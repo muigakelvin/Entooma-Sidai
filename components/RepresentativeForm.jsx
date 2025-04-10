@@ -25,23 +25,23 @@ export default function RepresentativeForm({
   onFileChange,
   onSubmit,
 }) {
-  const [members, setMembers] = React.useState([
-    {
-      memberIdNumber: "",
-      memberName: "",
-      memberPhoneNumber: "",
-      titleNumber: "",
-    },
-  ]);
+  const [members, setMembers] = React.useState(
+    formData.members || [
+      {
+        memberIdNumber: "",
+        memberName: "",
+        memberPhoneNumber: "",
+        titleNumber: "",
+      },
+    ]
+  );
 
-  // Handle changes for individual member fields
   const handleMemberChange = (index, field, value) => {
     const updatedMembers = [...members];
     updatedMembers[index][field] = value;
     setMembers(updatedMembers);
   };
 
-  // Add a new member field dynamically
   const addMemberField = () => {
     setMembers([
       ...members,
@@ -54,10 +54,13 @@ export default function RepresentativeForm({
     ]);
   };
 
-  // Remove a member field dynamically
   const removeMemberField = (index) => {
     const updatedMembers = members.filter((_, i) => i !== index);
     setMembers(updatedMembers);
+  };
+
+  const handleSubmit = () => {
+    onSubmit({ ...formData, members });
   };
 
   return (
@@ -68,7 +71,7 @@ export default function RepresentativeForm({
       <DialogContent>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Box component="form" sx={{ mt: 2 }}>
-            {/* Community Group Section */}
+            {/* Community Group Details Section */}
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
                 Community Group Details
@@ -124,26 +127,6 @@ export default function RepresentativeForm({
                     name="landSize"
                     label="Land Size (acres)"
                     value={formData.landSize}
-                    onChange={onFormChange}
-                    fullWidth
-                  />
-                </Grid>
-                {/* New Sublocation Field */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    name="sublocation"
-                    label="Sublocation"
-                    value={formData.sublocation}
-                    onChange={onFormChange}
-                    fullWidth
-                  />
-                </Grid>
-                {/* New Location Field */}
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    name="location"
-                    label="Location"
-                    value={formData.location}
                     onChange={onFormChange}
                     fullWidth
                   />
@@ -237,7 +220,6 @@ export default function RepresentativeForm({
                   </Button>
                 </Box>
               ))}
-              {/* Floating Action Button to Add New Member Fields */}
               <Fab
                 color="primary"
                 aria-label="add"
@@ -356,7 +338,7 @@ export default function RepresentativeForm({
         <Button onClick={onClose} color="secondary">
           Cancel
         </Button>
-        <Button onClick={onSubmit} variant="contained" color="primary">
+        <Button onClick={handleSubmit} variant="contained" color="primary">
           {formData.id ? "Update Record" : "Add Record"}
         </Button>
       </DialogActions>

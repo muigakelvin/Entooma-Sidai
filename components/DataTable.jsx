@@ -53,6 +53,7 @@ const initialRows = [
     loiDocument: "Not Uploaded",
     gisDetails: "Not Available",
     mouDocument: "Uploaded",
+    source: "Other", // Default source
   },
   {
     id: 1,
@@ -71,6 +72,7 @@ const initialRows = [
     loiDocument: "Uploaded",
     gisDetails: "Available",
     mouDocument: "Not Uploaded",
+    source: "Other", // Default source
   },
 ];
 
@@ -99,6 +101,7 @@ export default function DataTable() {
     loiDocument: "",
     gisDetails: "",
     mouDocument: "",
+    source: "Other", // Default source
   });
 
   const handleExpand = (id) => {
@@ -144,6 +147,7 @@ export default function DataTable() {
       loiDocument: "",
       gisDetails: "",
       mouDocument: "",
+      source: "Other", // Reset source
     });
   };
 
@@ -188,6 +192,7 @@ export default function DataTable() {
         loiDocument: formData.loiDocument || "Not Uploaded",
         gisDetails: formData.gisDetails || "Not Available",
         mouDocument: formData.mouDocument || "Not Uploaded",
+        source: isRepresentativeFormOpen ? "RepresentativeForm" : "Other", // Set source based on form type
       };
       setRows([...rows, newRow]);
       setFilteredRows([...filteredRows, newRow]);
@@ -480,6 +485,53 @@ export default function DataTable() {
                             </Grid>
                           </CardContent>
                         </Card>
+
+                        {/* Conditional Fourth Card for RepresentativeForm Source */}
+                        {row.source === "RepresentativeForm" && (
+                          <Card
+                            variant="outlined"
+                            className={`detail-card ${
+                              expandedRow === row.id ? "active-card" : ""
+                            }`}
+                            sx={{
+                              flex: "1 1 calc(33% - 16px)",
+                              minWidth: 300,
+                            }}
+                          >
+                            <CardContent>
+                              <Typography
+                                variant="h6"
+                                className="detail-header"
+                              >
+                                Representative Details
+                              </Typography>
+                              <div className="detail-item">
+                                <span className="detail-label">
+                                  Representative Name:
+                                </span>
+                                <span className="detail-value">
+                                  {row.communityMember}
+                                </span>
+                              </div>
+                              <div className="detail-item">
+                                <span className="detail-label">
+                                  Representative ID:
+                                </span>
+                                <span className="detail-value">
+                                  {row.idNumber}
+                                </span>
+                              </div>
+                              <div className="detail-item">
+                                <span className="detail-label">
+                                  Representative Phone:
+                                </span>
+                                <span className="detail-value">
+                                  {row.phoneNumber}
+                                </span>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        )}
                       </Box>
                     </Collapse>
                   </TableCell>
