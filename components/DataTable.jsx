@@ -30,9 +30,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import AddIcon from "@mui/icons-material/Add";
+import MapIcon from "@mui/icons-material/Map"; // Import Map Icon
 import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs from "dayjs"; // Import dayjs for date handling
 import AddFormDialog from "./AddFormDialog"; // Import the AddFormDialog component
 import "../index.css";
 
@@ -82,6 +84,7 @@ export default function DataTable() {
   const [filteredRows, setFilteredRows] = React.useState(initialRows);
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [formData, setFormData] = React.useState({
+    id: null, // Added ID for tracking during edit
     communityMember: "",
     idNumber: "",
     phoneNumber: "",
@@ -90,7 +93,7 @@ export default function DataTable() {
     location: "",
     fieldCoordinator: "",
     dateSigned: null,
-    communityName: "", // Community Name Field
+    communityName: "",
     signedLocal: "",
     signedOrg: "",
     witnessLocal: "",
@@ -121,6 +124,7 @@ export default function DataTable() {
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setFormData({
+      id: null,
       communityMember: "",
       idNumber: "",
       phoneNumber: "",
@@ -129,7 +133,7 @@ export default function DataTable() {
       location: "",
       fieldCoordinator: "",
       dateSigned: null,
-      communityName: "", // Reset Community Name Field
+      communityName: "",
       signedLocal: "",
       signedOrg: "",
       witnessLocal: "",
@@ -147,15 +151,46 @@ export default function DataTable() {
   };
 
   const handleSubmit = () => {
-    const newRow = {
-      id: Date.now(),
-      ...formData,
-      landSize: `${formData.landSize} acres`,
-      dateSigned: formData.dateSigned?.format("YYYY-MM-DD") || "",
-    };
-    setRows([...rows, newRow]);
-    setFilteredRows([...filteredRows, newRow]);
+    if (formData.id) {
+      // Update existing record
+      const updatedRows = rows.map((row) =>
+        row.id === formData.id
+          ? {
+              ...formData,
+              landSize: `${formData.landSize} acres`,
+              dateSigned: formData.dateSigned?.format("YYYY-MM-DD") || "",
+            }
+          : row
+      );
+      setRows(updatedRows);
+      setFilteredRows(updatedRows);
+    } else {
+      // Add new record
+      const newRow = {
+        id: Date.now(),
+        ...formData,
+        landSize: `${formData.landSize} acres`,
+        dateSigned: formData.dateSigned?.format("YYYY-MM-DD") || "",
+      };
+      setRows([...rows, newRow]);
+      setFilteredRows([...filteredRows, newRow]);
+    }
     handleCloseForm();
+  };
+
+  const handleEdit = (id) => {
+    const rowToEdit = rows.find((row) => row.id === id);
+    setFormData({
+      ...rowToEdit,
+      dateSigned: rowToEdit.dateSigned ? dayjs(rowToEdit.dateSigned) : null, // Ensure date is parsed correctly
+    });
+    setIsFormOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    const updatedRows = rows.filter((row) => row.id !== id);
+    setRows(updatedRows);
+    setFilteredRows(updatedRows);
   };
 
   return (
@@ -227,7 +262,7 @@ export default function DataTable() {
                     {row.landSize} acres
                   </TableCell>
                   <TableCell className="main-column">
-                    {row.communityName} {/* Display Community Name */}
+                    {row.communityName}
                   </TableCell>
                   <TableCell className="action-column">
                     <Tooltip title="View Details">
@@ -314,12 +349,13 @@ export default function DataTable() {
                               </span>
                             </div>
                             <div className="detail-item">
-                              <span className="detail-label">
-                                Field Coordinator:
-                              </span>
-                              <span className="detail-value">
-                                {row.fieldCoordinator}
-                              </span>
+                              <span className="detail-label">GIS Info:</span>
+                              <Tooltip title="View GIS Polygon">
+                                <IconButton size="small">
+                                  <MapIcon />{" "}
+                                  {/* Use an appropriate map icon here */}
+                                </IconButton>
+                              </Tooltip>
                             </div>
                           </CardContent>
                         </Card>
@@ -346,21 +382,33 @@ export default function DataTable() {
                               </span>
                             </div>
                             <div className="detail-item">
-                              <span className="detail-label">Witness:</span>
-                              <span className="detail-value">
-                                {row.witnessLocal}
+                              <span className="detail-label">
+                                LOI Document:
                               </span>
+                              <a
+                                href={row.loiDocument}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View LOI
+                              </a>
                             </div>
                             <div className="detail-item">
-                              <span className="detail-label">GIS Details:</span>
-                              <span className="detail-value">
-                                {row.gisDetails}
+                              <span className="detail-label">
+                                MOU Document:
                               </span>
+                              <a
+                                href={row.mouDocument}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View MOU
+                              </a>
                             </div>
                           </CardContent>
                         </Card>
 
-                        {/* Approval Status Card */}
+                        {/* Approved Signatories Card */}
                         <Card
                           variant="outlined"
                           className={`detail-card ${
@@ -373,7 +421,7 @@ export default function DataTable() {
                         >
                           <CardContent>
                             <Typography variant="h6" className="detail-header">
-                              Approval Status
+                              Approved Signatories
                             </Typography>
                             <Grid container spacing={2}>
                               <Grid item xs={12} sm={6}>
@@ -399,20 +447,20 @@ export default function DataTable() {
                               <Grid item xs={12} sm={6}>
                                 <div className="detail-item">
                                   <span className="detail-label">
-                                    LOI Document:
+                                    Witness Local:
                                   </span>
                                   <span className="detail-value">
-                                    {row.loiDocument}
+                                    {row.witnessLocal}
                                   </span>
                                 </div>
                               </Grid>
                               <Grid item xs={12} sm={6}>
                                 <div className="detail-item">
                                   <span className="detail-label">
-                                    MOU Document:
+                                    Field Coordinator:
                                   </span>
                                   <span className="detail-value">
-                                    {row.mouDocument}
+                                    {row.fieldCoordinator}
                                   </span>
                                 </div>
                               </Grid>
@@ -429,13 +477,14 @@ export default function DataTable() {
         </Table>
       </TableContainer>
 
-      {/* Add Form Dialog */}
+      {/* Add/Edit Form Dialog */}
       <AddFormDialog
         open={isFormOpen}
         onClose={handleCloseForm}
         formData={formData}
         onFormChange={handleFormChange}
         onSubmit={handleSubmit}
+        isEditMode={!!formData.id} // Pass a flag to indicate edit mode
       />
     </Box>
   );

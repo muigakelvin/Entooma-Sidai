@@ -9,10 +9,6 @@ import {
   Box,
   Grid,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Typography,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -139,32 +135,22 @@ export default function AddFormDialog({
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel>Signed (Local)</InputLabel>
-                    <Select
-                      name="signedLocal"
-                      value={formData.signedLocal}
-                      onChange={onFormChange}
-                      label="Signed (Local)"
-                    >
-                      <MenuItem value="Yes">Yes</MenuItem>
-                      <MenuItem value="No">No</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <TextField
+                    name="signedLocal"
+                    label="Signed (Local)"
+                    value={formData.signedLocal}
+                    onChange={onFormChange}
+                    fullWidth
+                  />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel>Signed (Org)</InputLabel>
-                    <Select
-                      name="signedOrg"
-                      value={formData.signedOrg}
-                      onChange={onFormChange}
-                      label="Signed (Org)"
-                    >
-                      <MenuItem value="Yes">Yes</MenuItem>
-                      <MenuItem value="No">No</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <TextField
+                    name="signedOrg"
+                    label="Signed (Org)"
+                    value={formData.signedOrg}
+                    onChange={onFormChange}
+                    fullWidth
+                  />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <DatePicker
