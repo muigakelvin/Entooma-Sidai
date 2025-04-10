@@ -48,13 +48,12 @@ const initialRows = [
     location: "Loc B",
     fieldCoordinator: "John Doe",
     dateSigned: "2023-10-02",
-    signedOnBehalfOfLocalCommunity: "No",
-    signedOnBehalfOfOrganization: "Yes",
-    localWitness: "Witness B",
-    loiPdf: "Not Uploaded",
-    mouPdf: "Uploaded",
-    gisInfo: "Not Available",
-    titleNumber: "TN12345",
+    signedLocal: "No",
+    signedOrg: "Yes",
+    witnessLocal: "Witness B",
+    loiDocument: "Not Uploaded",
+    gisDetails: "Not Available",
+    mouDocument: "Uploaded",
   },
   {
     id: 1,
@@ -67,13 +66,12 @@ const initialRows = [
     fieldCoordinator: "Jane Smith",
     dateSigned: "2023-10-01",
     communityName: "Community A",
-    signedOnBehalfOfLocalCommunity: "Yes",
-    signedOnBehalfOfOrganization: "No",
-    localWitness: "Witness A",
-    loiPdf: "Uploaded",
-    mouPdf: "Not Uploaded",
-    gisInfo: "Available",
-    titleNumber: "TN67890",
+    signedLocal: "Yes",
+    signedOrg: "No",
+    witnessLocal: "Witness A",
+    loiDocument: "Uploaded",
+    gisDetails: "Available",
+    mouDocument: "Not Uploaded",
   },
 ];
 
@@ -92,14 +90,13 @@ export default function DataTable() {
     location: "",
     fieldCoordinator: "",
     dateSigned: null,
-    communityName: "",
-    signedOnBehalfOfLocalCommunity: "",
-    signedOnBehalfOfOrganization: "",
-    localWitness: "",
-    loiPdf: "",
-    mouPdf: "",
-    gisInfo: "",
-    titleNumber: "",
+    communityName: "", // Community Name Field
+    signedLocal: "",
+    signedOrg: "",
+    witnessLocal: "",
+    loiDocument: "",
+    gisDetails: "",
+    mouDocument: "",
   });
 
   const handleExpand = (id) => {
@@ -132,14 +129,13 @@ export default function DataTable() {
       location: "",
       fieldCoordinator: "",
       dateSigned: null,
-      communityName: "",
-      signedOnBehalfOfLocalCommunity: "",
-      signedOnBehalfOfOrganization: "",
-      localWitness: "",
-      loiPdf: "",
-      mouPdf: "",
-      gisInfo: "",
-      titleNumber: "",
+      communityName: "", // Reset Community Name Field
+      signedLocal: "",
+      signedOrg: "",
+      witnessLocal: "",
+      loiDocument: "",
+      gisDetails: "",
+      mouDocument: "",
     });
   };
 
@@ -212,7 +208,6 @@ export default function DataTable() {
               <TableCell className="main-column">Phone</TableCell>
               <TableCell className="main-column">Land Size</TableCell>
               <TableCell className="main-column">Community</TableCell>
-              <TableCell className="main-column">Location</TableCell>
               <TableCell className="action-column">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -232,9 +227,8 @@ export default function DataTable() {
                     {row.landSize} acres
                   </TableCell>
                   <TableCell className="main-column">
-                    {row.communityName}
+                    {row.communityName} {/* Display Community Name */}
                   </TableCell>
-                  <TableCell className="main-column">{row.location}</TableCell>
                   <TableCell className="action-column">
                     <Tooltip title="View Details">
                       <IconButton
@@ -273,7 +267,7 @@ export default function DataTable() {
                 {/* Detail Row */}
                 <TableRow>
                   <TableCell
-                    colSpan={7} // Updated to account for the new column
+                    colSpan={6}
                     className="detail-panel"
                     sx={{ padding: 0 }}
                   >
@@ -282,30 +276,41 @@ export default function DataTable() {
                       timeout="auto"
                       unmountOnExit
                     >
-                      <Box className="card-container">
+                      {/* Horizontal Card Layout */}
+                      <Box
+                        className="card-container"
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: 2,
+                          justifyContent: "space-between",
+                        }}
+                      >
                         {/* Location Card */}
                         <Card
                           variant="outlined"
                           className={`detail-card ${
                             expandedRow === row.id ? "active-card" : ""
                           }`}
+                          sx={{
+                            flex: "1 1 calc(33% - 16px)", // Each card takes ~33% width
+                            minWidth: 300, // Minimum width for responsiveness
+                          }}
                         >
                           <CardContent>
                             <Typography variant="h6" className="detail-header">
                               Location Details
                             </Typography>
                             <div className="detail-item">
-                              <span className="detail-label">
-                                Title Number:
-                              </span>
-                              <span className="detail-value">
-                                {row.titleNumber}
-                              </span>
-                            </div>
-                            <div className="detail-item">
                               <span className="detail-label">Sublocation:</span>
                               <span className="detail-value">
                                 {row.sublocation}
+                              </span>
+                            </div>
+                            <div className="detail-item">
+                              <span className="detail-label">Location:</span>
+                              <span className="detail-value">
+                                {row.location}
                               </span>
                             </div>
                             <div className="detail-item">
@@ -325,6 +330,10 @@ export default function DataTable() {
                           className={`detail-card ${
                             expandedRow === row.id ? "active-card" : ""
                           }`}
+                          sx={{
+                            flex: "1 1 calc(33% - 16px)",
+                            minWidth: 300,
+                          }}
                         >
                           <CardContent>
                             <Typography variant="h6" className="detail-header">
@@ -337,17 +346,15 @@ export default function DataTable() {
                               </span>
                             </div>
                             <div className="detail-item">
-                              <span className="detail-label">LOI PDF:</span>
-                              <span className="detail-value">{row.loiPdf}</span>
-                            </div>
-                            <div className="detail-item">
-                              <span className="detail-label">MOU PDF:</span>
-                              <span className="detail-value">{row.mouPdf}</span>
-                            </div>
-                            <div className="detail-item">
-                              <span className="detail-label">GIS Info:</span>
+                              <span className="detail-label">Witness:</span>
                               <span className="detail-value">
-                                {row.gisInfo}
+                                {row.witnessLocal}
+                              </span>
+                            </div>
+                            <div className="detail-item">
+                              <span className="detail-label">GIS Details:</span>
+                              <span className="detail-value">
+                                {row.gisDetails}
                               </span>
                             </div>
                           </CardContent>
@@ -359,6 +366,10 @@ export default function DataTable() {
                           className={`detail-card ${
                             expandedRow === row.id ? "active-card" : ""
                           }`}
+                          sx={{
+                            flex: "1 1 calc(33% - 16px)",
+                            minWidth: 300,
+                          }}
                         >
                           <CardContent>
                             <Typography variant="h6" className="detail-header">
@@ -368,30 +379,40 @@ export default function DataTable() {
                               <Grid item xs={12} sm={6}>
                                 <div className="detail-item">
                                   <span className="detail-label">
-                                    Signed (Local Community):
+                                    Signed Local:
                                   </span>
                                   <span className="detail-value">
-                                    {row.signedOnBehalfOfLocalCommunity}
+                                    {row.signedLocal}
                                   </span>
                                 </div>
                               </Grid>
                               <Grid item xs={12} sm={6}>
                                 <div className="detail-item">
                                   <span className="detail-label">
-                                    Signed (Organization):
+                                    Signed Org:
                                   </span>
                                   <span className="detail-value">
-                                    {row.signedOnBehalfOfOrganization}
+                                    {row.signedOrg}
                                   </span>
                                 </div>
                               </Grid>
                               <Grid item xs={12} sm={6}>
                                 <div className="detail-item">
                                   <span className="detail-label">
-                                    Local Witness:
+                                    LOI Document:
                                   </span>
                                   <span className="detail-value">
-                                    {row.localWitness}
+                                    {row.loiDocument}
+                                  </span>
+                                </div>
+                              </Grid>
+                              <Grid item xs={12} sm={6}>
+                                <div className="detail-item">
+                                  <span className="detail-label">
+                                    MOU Document:
+                                  </span>
+                                  <span className="detail-value">
+                                    {row.mouDocument}
                                   </span>
                                 </div>
                               </Grid>
