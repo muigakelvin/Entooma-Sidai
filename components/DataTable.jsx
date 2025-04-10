@@ -23,7 +23,6 @@ import {
   InputLabel,
   Card,
   CardContent,
-  CardActions,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -49,12 +48,13 @@ const initialRows = [
     location: "Loc B",
     fieldCoordinator: "John Doe",
     dateSigned: "2023-10-02",
-    signedLocal: "No",
-    signedOrg: "Yes",
-    witnessLocal: "Witness B",
-    loiDocument: "Not Uploaded",
-    gisDetails: "Not Available",
-    mouDocument: "Uploaded",
+    signedOnBehalfOfLocalCommunity: "No",
+    signedOnBehalfOfOrganization: "Yes",
+    localWitness: "Witness B",
+    loiPdf: "Not Uploaded",
+    mouPdf: "Uploaded",
+    gisInfo: "Not Available",
+    titleNumber: "TN12345",
   },
   {
     id: 1,
@@ -67,12 +67,13 @@ const initialRows = [
     fieldCoordinator: "Jane Smith",
     dateSigned: "2023-10-01",
     communityName: "Community A",
-    signedLocal: "Yes",
-    signedOrg: "No",
-    witnessLocal: "Witness A",
-    loiDocument: "Uploaded",
-    gisDetails: "Available",
-    mouDocument: "Not Uploaded",
+    signedOnBehalfOfLocalCommunity: "Yes",
+    signedOnBehalfOfOrganization: "No",
+    localWitness: "Witness A",
+    loiPdf: "Uploaded",
+    mouPdf: "Not Uploaded",
+    gisInfo: "Available",
+    titleNumber: "TN67890",
   },
 ];
 
@@ -92,12 +93,13 @@ export default function DataTable() {
     fieldCoordinator: "",
     dateSigned: null,
     communityName: "",
-    signedLocal: "",
-    signedOrg: "",
-    witnessLocal: "",
-    loiDocument: "",
-    gisDetails: "",
-    mouDocument: "",
+    signedOnBehalfOfLocalCommunity: "",
+    signedOnBehalfOfOrganization: "",
+    localWitness: "",
+    loiPdf: "",
+    mouPdf: "",
+    gisInfo: "",
+    titleNumber: "",
   });
 
   const handleExpand = (id) => {
@@ -131,12 +133,13 @@ export default function DataTable() {
       fieldCoordinator: "",
       dateSigned: null,
       communityName: "",
-      signedLocal: "",
-      signedOrg: "",
-      witnessLocal: "",
-      loiDocument: "",
-      gisDetails: "",
-      mouDocument: "",
+      signedOnBehalfOfLocalCommunity: "",
+      signedOnBehalfOfOrganization: "",
+      localWitness: "",
+      loiPdf: "",
+      mouPdf: "",
+      gisInfo: "",
+      titleNumber: "",
     });
   };
 
@@ -209,7 +212,6 @@ export default function DataTable() {
               <TableCell className="main-column">Phone</TableCell>
               <TableCell className="main-column">Land Size</TableCell>
               <TableCell className="main-column">Community</TableCell>
-              {/* New Column for Location */}
               <TableCell className="main-column">Location</TableCell>
               <TableCell className="action-column">Actions</TableCell>
             </TableRow>
@@ -232,7 +234,6 @@ export default function DataTable() {
                   <TableCell className="main-column">
                     {row.communityName}
                   </TableCell>
-                  {/* New Cell for Location */}
                   <TableCell className="main-column">{row.location}</TableCell>
                   <TableCell className="action-column">
                     <Tooltip title="View Details">
@@ -268,6 +269,7 @@ export default function DataTable() {
                     </Tooltip>
                   </TableCell>
                 </TableRow>
+
                 {/* Detail Row */}
                 <TableRow>
                   <TableCell
@@ -281,7 +283,42 @@ export default function DataTable() {
                       unmountOnExit
                     >
                       <Box className="card-container">
-                        {/* Location Card (now partially visible, so remove it here) */}
+                        {/* Location Card */}
+                        <Card
+                          variant="outlined"
+                          className={`detail-card ${
+                            expandedRow === row.id ? "active-card" : ""
+                          }`}
+                        >
+                          <CardContent>
+                            <Typography variant="h6" className="detail-header">
+                              Location Details
+                            </Typography>
+                            <div className="detail-item">
+                              <span className="detail-label">
+                                Title Number:
+                              </span>
+                              <span className="detail-value">
+                                {row.titleNumber}
+                              </span>
+                            </div>
+                            <div className="detail-item">
+                              <span className="detail-label">Sublocation:</span>
+                              <span className="detail-value">
+                                {row.sublocation}
+                              </span>
+                            </div>
+                            <div className="detail-item">
+                              <span className="detail-label">
+                                Field Coordinator:
+                              </span>
+                              <span className="detail-value">
+                                {row.fieldCoordinator}
+                              </span>
+                            </div>
+                          </CardContent>
+                        </Card>
+
                         {/* Documentation Card */}
                         <Card
                           variant="outlined"
@@ -300,19 +337,22 @@ export default function DataTable() {
                               </span>
                             </div>
                             <div className="detail-item">
-                              <span className="detail-label">Witness:</span>
-                              <span className="detail-value">
-                                {row.witnessLocal}
-                              </span>
+                              <span className="detail-label">LOI PDF:</span>
+                              <span className="detail-value">{row.loiPdf}</span>
                             </div>
                             <div className="detail-item">
-                              <span className="detail-label">GIS Details:</span>
+                              <span className="detail-label">MOU PDF:</span>
+                              <span className="detail-value">{row.mouPdf}</span>
+                            </div>
+                            <div className="detail-item">
+                              <span className="detail-label">GIS Info:</span>
                               <span className="detail-value">
-                                {row.gisDetails}
+                                {row.gisInfo}
                               </span>
                             </div>
                           </CardContent>
                         </Card>
+
                         {/* Approval Status Card */}
                         <Card
                           variant="outlined"
@@ -328,40 +368,30 @@ export default function DataTable() {
                               <Grid item xs={12} sm={6}>
                                 <div className="detail-item">
                                   <span className="detail-label">
-                                    Signed Local:
+                                    Signed (Local Community):
                                   </span>
                                   <span className="detail-value">
-                                    {row.signedLocal}
+                                    {row.signedOnBehalfOfLocalCommunity}
                                   </span>
                                 </div>
                               </Grid>
                               <Grid item xs={12} sm={6}>
                                 <div className="detail-item">
                                   <span className="detail-label">
-                                    Signed Org:
+                                    Signed (Organization):
                                   </span>
                                   <span className="detail-value">
-                                    {row.signedOrg}
+                                    {row.signedOnBehalfOfOrganization}
                                   </span>
                                 </div>
                               </Grid>
                               <Grid item xs={12} sm={6}>
                                 <div className="detail-item">
                                   <span className="detail-label">
-                                    LOI Document:
+                                    Local Witness:
                                   </span>
                                   <span className="detail-value">
-                                    {row.loiDocument}
-                                  </span>
-                                </div>
-                              </Grid>
-                              <Grid item xs={12} sm={6}>
-                                <div className="detail-item">
-                                  <span className="detail-label">
-                                    MOU Document:
-                                  </span>
-                                  <span className="detail-value">
-                                    {row.mouDocument}
+                                    {row.localWitness}
                                   </span>
                                 </div>
                               </Grid>
