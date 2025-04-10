@@ -10,10 +10,12 @@ import {
   Grid,
   TextField,
   Typography,
+  Fab,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
+import AddIcon from "@mui/icons-material/Add"; // Import Add Icon
 
 export default function RepresentativeForm({
   open,
@@ -23,6 +25,41 @@ export default function RepresentativeForm({
   onFileChange,
   onSubmit,
 }) {
+  const [members, setMembers] = React.useState([
+    {
+      memberIdNumber: "",
+      memberName: "",
+      memberPhoneNumber: "",
+      titleNumber: "",
+    },
+  ]);
+
+  // Handle changes for individual member fields
+  const handleMemberChange = (index, field, value) => {
+    const updatedMembers = [...members];
+    updatedMembers[index][field] = value;
+    setMembers(updatedMembers);
+  };
+
+  // Add a new member field dynamically
+  const addMemberField = () => {
+    setMembers([
+      ...members,
+      {
+        memberIdNumber: "",
+        memberName: "",
+        memberPhoneNumber: "",
+        titleNumber: "",
+      },
+    ]);
+  };
+
+  // Remove a member field dynamically
+  const removeMemberField = (index) => {
+    const updatedMembers = members.filter((_, i) => i !== index);
+    setMembers(updatedMembers);
+  };
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>
@@ -82,6 +119,35 @@ export default function RepresentativeForm({
                     fullWidth
                   />
                 </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    name="landSize"
+                    label="Land Size (acres)"
+                    value={formData.landSize}
+                    onChange={onFormChange}
+                    fullWidth
+                  />
+                </Grid>
+                {/* New Sublocation Field */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    name="sublocation"
+                    label="Sublocation"
+                    value={formData.sublocation}
+                    onChange={onFormChange}
+                    fullWidth
+                  />
+                </Grid>
+                {/* New Location Field */}
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    name="location"
+                    label="Location"
+                    value={formData.location}
+                    onChange={onFormChange}
+                    fullWidth
+                  />
+                </Grid>
               </Grid>
             </Box>
 
@@ -90,44 +156,100 @@ export default function RepresentativeForm({
               <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
                 Group Member Details
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    name="memberName"
-                    label="Member Name"
-                    value={formData.memberName}
-                    onChange={onFormChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    name="memberPhoneNumber"
-                    label="Member Phone Number"
-                    value={formData.memberPhoneNumber}
-                    onChange={onFormChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    name="memberIdNumber"
-                    label="Member ID Number"
-                    value={formData.memberIdNumber}
-                    onChange={onFormChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    name="titleNumber"
-                    label="Title Number"
-                    value={formData.titleNumber}
-                    onChange={onFormChange}
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
+              {members.map((member, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    border: "1px solid #ccc",
+                    p: 2,
+                    borderRadius: "8px",
+                    mb: 2,
+                  }}
+                >
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        name="memberName"
+                        label="Member Name"
+                        value={member.memberName}
+                        onChange={(e) =>
+                          handleMemberChange(
+                            index,
+                            "memberName",
+                            e.target.value
+                          )
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        name="memberPhoneNumber"
+                        label="Member Phone Number"
+                        value={member.memberPhoneNumber}
+                        onChange={(e) =>
+                          handleMemberChange(
+                            index,
+                            "memberPhoneNumber",
+                            e.target.value
+                          )
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        name="memberIdNumber"
+                        label="Member ID Number"
+                        value={member.memberIdNumber}
+                        onChange={(e) =>
+                          handleMemberChange(
+                            index,
+                            "memberIdNumber",
+                            e.target.value
+                          )
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        name="titleNumber"
+                        label="Title Number"
+                        value={member.titleNumber}
+                        onChange={(e) =>
+                          handleMemberChange(
+                            index,
+                            "titleNumber",
+                            e.target.value
+                          )
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+                  </Grid>
+                  <Button
+                    onClick={() => removeMemberField(index)}
+                    color="error"
+                    sx={{ mt: 1 }}
+                  >
+                    Remove Member
+                  </Button>
+                </Box>
+              ))}
+              {/* Floating Action Button to Add New Member Fields */}
+              <Fab
+                color="primary"
+                aria-label="add"
+                onClick={addMemberField}
+                sx={{
+                  position: "absolute",
+                  bottom: 20,
+                  right: 20,
+                }}
+              >
+                <AddIcon />
+              </Fab>
             </Box>
 
             {/* Authorized Signatories Section */}
