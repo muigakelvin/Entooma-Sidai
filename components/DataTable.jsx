@@ -17,10 +17,6 @@ import {
   TextField,
   Button,
   InputAdornment,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Card,
   CardContent,
 } from "@mui/material";
@@ -36,6 +32,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs"; // Import dayjs for date handling
 import AddFormDialog from "./AddFormDialog"; // Import the AddFormDialog component
+import RepresentativeForm from "./RepresentativeForm"; // Import the RepresentativeForm component
 import "../index.css";
 
 const initialRows = [
@@ -83,6 +80,8 @@ export default function DataTable() {
   const [rows, setRows] = React.useState(initialRows);
   const [filteredRows, setFilteredRows] = React.useState(initialRows);
   const [isFormOpen, setIsFormOpen] = React.useState(false);
+  const [isRepresentativeFormOpen, setIsRepresentativeFormOpen] =
+    React.useState(false); // State for Representative Form
   const [formData, setFormData] = React.useState({
     id: null, // Added ID for tracking during edit
     communityMember: "",
@@ -117,12 +116,17 @@ export default function DataTable() {
     setFilteredRows(filtered);
   };
 
-  const handleOpenForm = () => {
-    setIsFormOpen(true);
+  const handleOpenForm = (formType) => {
+    if (formType === "representative") {
+      setIsRepresentativeFormOpen(true);
+    } else {
+      setIsFormOpen(true);
+    }
   };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
+    setIsRepresentativeFormOpen(false);
     setFormData({
       id: null,
       communityMember: "",
@@ -157,7 +161,7 @@ export default function DataTable() {
         row.id === formData.id
           ? {
               ...formData,
-              landSize: `${formData.landSize} acres`,
+              landSize: `${formData.landSize || "N/A"} acres`,
               dateSigned: formData.dateSigned?.format("YYYY-MM-DD") || "",
             }
           : row
@@ -168,9 +172,22 @@ export default function DataTable() {
       // Add new record
       const newRow = {
         id: Date.now(),
-        ...formData,
-        landSize: `${formData.landSize} acres`,
+        communityMember:
+          formData.representativeName || formData.communityMember, // Map Representative Name
+        idNumber: formData.representativeIdNumber || formData.idNumber, // Map Representative ID Number
+        phoneNumber: formData.representativePhone || formData.phoneNumber, // Map Representative Phone
+        landSize: `${formData.landSize || "N/A"} acres`, // Default to "N/A" if no land size
+        communityName: formData.communityName, // Map Community Name
+        sublocation: formData.sublocation || "N/A",
+        location: formData.location || "N/A",
+        fieldCoordinator: formData.fieldCoordinator || "N/A",
         dateSigned: formData.dateSigned?.format("YYYY-MM-DD") || "",
+        signedLocal: formData.signedLocal || "No",
+        signedOrg: formData.signedOrg || "No",
+        witnessLocal: formData.witnessLocal || "N/A",
+        loiDocument: formData.loiDocument || "Not Uploaded",
+        gisDetails: formData.gisDetails || "Not Available",
+        mouDocument: formData.mouDocument || "Not Uploaded",
       };
       setRows([...rows, newRow]);
       setFilteredRows([...filteredRows, newRow]);
@@ -216,7 +233,7 @@ export default function DataTable() {
           <AddIcon sx={{ color: "#4caf50", fontSize: 32, marginRight: 1 }} />
           <Button
             variant="contained"
-            onClick={handleOpenForm}
+            onClick={() => handleOpenForm("individual")}
             className="add-button"
             startIcon={<AddIcon />}
           >
@@ -224,7 +241,7 @@ export default function DataTable() {
           </Button>
           <Button
             variant="contained"
-            onClick={handleOpenForm}
+            onClick={() => handleOpenForm("representative")}
             className="add-button"
             startIcon={<AddIcon />}
           >
@@ -232,7 +249,6 @@ export default function DataTable() {
           </Button>
         </Box>
       </Box>
-
       {/* Table Content */}
       <TableContainer component={Paper}>
         <Table>
@@ -298,7 +314,6 @@ export default function DataTable() {
                     </Tooltip>
                   </TableCell>
                 </TableRow>
-
                 {/* Detail Row */}
                 <TableRow>
                   <TableCell
@@ -359,7 +374,6 @@ export default function DataTable() {
                             </div>
                           </CardContent>
                         </Card>
-
                         {/* Documentation Card */}
                         <Card
                           variant="outlined"
@@ -407,7 +421,6 @@ export default function DataTable() {
                             </div>
                           </CardContent>
                         </Card>
-
                         {/* Approved Signatories Card */}
                         <Card
                           variant="outlined"
@@ -476,16 +489,27 @@ export default function DataTable() {
           </TableBody>
         </Table>
       </TableContainer>
-
       {/* Add/Edit Form Dialog */}
-      <AddFormDialog
-        open={isFormOpen}
-        onClose={handleCloseForm}
-        formData={formData}
-        onFormChange={handleFormChange}
-        onSubmit={handleSubmit}
-        isEditMode={!!formData.id} // Pass a flag to indicate edit mode
-      />
+      {isFormOpen && (
+        <AddFormDialog
+          open={isFormOpen}
+          onClose={handleCloseForm}
+          formData={formData}
+          onFormChange={handleFormChange}
+          onSubmit={handleSubmit}
+          isEditMode={!!formData.id} // Pass a flag to indicate edit mode
+        />
+      )}
+      {/* Representative Form Dialog */}
+      {isRepresentativeFormOpen && (
+        <RepresentativeForm
+          open={isRepresentativeFormOpen}
+          onClose={handleCloseForm}
+          formData={formData}
+          onFormChange={handleFormChange}
+          onSubmit={handleSubmit}
+        />
+      )}
     </Box>
   );
 }
