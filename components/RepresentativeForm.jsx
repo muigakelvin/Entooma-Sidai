@@ -1,4 +1,3 @@
-// src/components/RepresentativeForm.jsx
 import React from "react";
 import {
   Dialog,
@@ -11,6 +10,7 @@ import {
   TextField,
   Typography,
   Fab,
+  Tooltip,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -36,13 +36,25 @@ export default function RepresentativeForm({
     ]
   );
 
+  React.useEffect(() => {
+    console.log("Initial Members State:", members); // Log initial state of members
+  }, []);
+
+  // Function to handle changes in member fields
   const handleMemberChange = (index, field, value) => {
-    const updatedMembers = [...members];
-    updatedMembers[index][field] = value;
+    console.log(
+      `Updating Member at index ${index}, field: ${field}, value: ${value}`
+    ); // Debugging log
+    const updatedMembers = members.map((member, i) =>
+      i === index ? { ...member, [field]: value } : member
+    );
+    console.log("Updated Members Array:", updatedMembers); // Log updated members array
     setMembers(updatedMembers);
   };
 
+  // Function to add a new member field
   const addMemberField = () => {
+    console.log("Adding new member field"); // Debugging log
     setMembers([
       ...members,
       {
@@ -54,12 +66,30 @@ export default function RepresentativeForm({
     ]);
   };
 
+  // Function to remove a member field
   const removeMemberField = (index) => {
+    console.log(`Removing member at index ${index}`); // Debugging log
     const updatedMembers = members.filter((_, i) => i !== index);
+    console.log("Updated Members Array After Removal:", updatedMembers); // Log updated array
     setMembers(updatedMembers);
   };
 
+  // Validate members before submission
+  const validateMembers = () => {
+    const isValid = members.every(
+      (member) => member.memberName && member.memberPhoneNumber
+    );
+    if (!isValid) {
+      alert("Please fill out all required fields for group members.");
+      return false;
+    }
+    return true;
+  };
+
+  // Function to handle form submission
   const handleSubmit = () => {
+    if (!validateMembers()) return;
+    console.log("Final Members Data Before Submission:", members); // Debugging log
     onSubmit({ ...formData, members });
   };
 
@@ -151,7 +181,6 @@ export default function RepresentativeForm({
                 </Grid>
               </Grid>
             </Box>
-
             {/* Group Members Section */}
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
@@ -170,7 +199,7 @@ export default function RepresentativeForm({
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        name="memberName"
+                        name={`memberName-${index}`}
                         label="Member Name"
                         value={member.memberName}
                         onChange={(e) =>
@@ -185,7 +214,7 @@ export default function RepresentativeForm({
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        name="memberPhoneNumber"
+                        name={`memberPhoneNumber-${index}`}
                         label="Member Phone Number"
                         value={member.memberPhoneNumber}
                         onChange={(e) =>
@@ -200,7 +229,7 @@ export default function RepresentativeForm({
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        name="memberIdNumber"
+                        name={`memberIdNumber-${index}`}
                         label="Member ID Number"
                         value={member.memberIdNumber}
                         onChange={(e) =>
@@ -215,7 +244,7 @@ export default function RepresentativeForm({
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        name="titleNumber"
+                        name={`titleNumber-${index}`}
                         label="Title Number"
                         value={member.titleNumber}
                         onChange={(e) =>
@@ -233,25 +262,27 @@ export default function RepresentativeForm({
                     onClick={() => removeMemberField(index)}
                     color="error"
                     sx={{ mt: 1 }}
+                    disabled={members.length === 1} // Disable if only one member is left
                   >
                     Remove Member
                   </Button>
                 </Box>
               ))}
-              <Fab
-                color="primary"
-                aria-label="add"
-                onClick={addMemberField}
-                sx={{
-                  position: "absolute",
-                  bottom: 20,
-                  right: 20,
-                }}
-              >
-                <AddIcon />
-              </Fab>
+              <Tooltip title="Add Member">
+                <Fab
+                  color="primary"
+                  aria-label="add"
+                  onClick={addMemberField}
+                  sx={{
+                    position: "absolute",
+                    bottom: 20,
+                    right: 20,
+                  }}
+                >
+                  <AddIcon />
+                </Fab>
+              </Tooltip>
             </Box>
-
             {/* Authorized Signatories Section */}
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
@@ -310,7 +341,6 @@ export default function RepresentativeForm({
                 </Grid>
               </Grid>
             </Box>
-
             {/* Documents and GIS Information Section */}
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>

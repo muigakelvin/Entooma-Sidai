@@ -169,32 +169,39 @@ export default function DataTable() {
   };
 
   const handleFormChange = (e) => {
+    console.log("Form Data Change:", e.target.name, e.target.value); // Debugging log
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = () => {
-    if (formData.id) {
+  const handleSubmit = (submittedData) => {
+    console.log("Received Submitted Data:", submittedData); // Debugging log
+    if (submittedData.id) {
       // Update existing record
       const updatedRows = rows.map((row) =>
-        row.id === formData.id
+        row.id === submittedData.id
           ? {
-              ...formData,
+              ...submittedData,
               communityMember:
-                formData.representativeName || formData.communityMember,
-              idNumber: formData.representativeIdNumber || formData.idNumber,
-              phoneNumber: formData.representativePhone || formData.phoneNumber, // Map representativePhone to phoneNumber
-              landSize: `${formData.landSize || "N/A"} acres`,
-              communityName: formData.communityName,
-              sublocation: formData.sublocation || "N/A", // Map sublocation
-              location: formData.location || "N/A", // Map location
-              gisDetails: formData.gisDetails || "Not Available", // Map GIS details
-              dateSigned: formData.dateSigned?.format("YYYY-MM-DD") || "",
+                submittedData.representativeName ||
+                submittedData.communityMember,
+              idNumber:
+                submittedData.representativeIdNumber || submittedData.idNumber,
+              phoneNumber:
+                submittedData.representativePhone || submittedData.phoneNumber,
+              landSize: `${submittedData.landSize || "N/A"} acres`,
+              communityName: submittedData.communityName,
+              sublocation: submittedData.sublocation || "N/A", // Map sublocation
+              location: submittedData.location || "N/A", // Map location
+              gisDetails: submittedData.gisDetails || "Not Available", // Map GIS details
+              dateSigned: submittedData.dateSigned?.format("YYYY-MM-DD") || "",
+              members: submittedData.members || [], // Ensure members array is included
             }
           : row
       );
+      console.log("Updated Rows After Edit:", updatedRows); // Log updated rows
       setRows(updatedRows);
       setFilteredRows(updatedRows);
     } else {
@@ -202,24 +209,27 @@ export default function DataTable() {
       const newRow = {
         id: Date.now(),
         communityMember:
-          formData.representativeName || formData.communityMember,
-        idNumber: formData.representativeIdNumber || formData.idNumber,
-        phoneNumber: formData.representativePhone || formData.phoneNumber, // Map representativePhone to phoneNumber
-        landSize: `${formData.landSize || "N/A"} acres`,
-        communityName: formData.communityName,
-        sublocation: formData.sublocation || "N/A", // Map sublocation
-        location: formData.location || "N/A", // Map location
-        gisDetails: formData.gisDetails || "Not Available", // Map GIS details
-        fieldCoordinator: formData.fieldCoordinator || "N/A",
-        dateSigned: formData.dateSigned?.format("YYYY-MM-DD") || "",
-        signedLocal: formData.signedLocal || "No",
-        signedOrg: formData.signedOrg || "No",
-        witnessLocal: formData.witnessLocal || "N/A",
-        loiDocument: formData.loiDocument || "Not Uploaded",
-        mouDocument: formData.mouDocument || "Not Uploaded",
-        source: isRepresentativeFormOpen ? "RepresentativeForm" : "Other", // Set source based on form type
-        members: formData.members || [], // Include members array
+          submittedData.representativeName || submittedData.communityMember,
+        idNumber:
+          submittedData.representativeIdNumber || submittedData.idNumber,
+        phoneNumber:
+          submittedData.representativePhone || submittedData.phoneNumber,
+        landSize: `${submittedData.landSize || "N/A"} acres`,
+        communityName: submittedData.communityName,
+        sublocation: submittedData.sublocation || "N/A", // Map sublocation
+        location: submittedData.location || "N/A", // Map location
+        gisDetails: submittedData.gisDetails || "Not Available", // Map GIS details
+        fieldCoordinator: submittedData.fieldCoordinator || "N/A",
+        dateSigned: submittedData.dateSigned?.format("YYYY-MM-DD") || "",
+        signedLocal: submittedData.signedLocal || "No",
+        signedOrg: submittedData.signedOrg || "No",
+        witnessLocal: submittedData.witnessLocal || "N/A",
+        loiDocument: submittedData.loiDocument || "Not Uploaded",
+        mouDocument: submittedData.mouDocument || "Not Uploaded",
+        source: isRepresentativeFormOpen ? "RepresentativeForm" : "Other",
+        members: submittedData.members || [], // Ensure members array is included
       };
+      console.log("New Row Created:", newRow); // Log new row
       setRows([...rows, newRow]);
       setFilteredRows([...filteredRows, newRow]);
     }
@@ -228,6 +238,7 @@ export default function DataTable() {
 
   const handleEdit = (id) => {
     const rowToEdit = rows.find((row) => row.id === id);
+    console.log("Editing Row:", rowToEdit); // Debugging log
     setFormData({
       ...rowToEdit,
       dateSigned: rowToEdit.dateSigned ? dayjs(rowToEdit.dateSigned) : null, // Ensure date is parsed correctly
@@ -280,7 +291,6 @@ export default function DataTable() {
           </Button>
         </Box>
       </Box>
-
       {/* Table Content */}
       <TableContainer component={Paper}>
         <Table>
@@ -563,22 +573,28 @@ export default function DataTable() {
                                   </TableHead>
                                   <TableBody>
                                     {row.members && row.members.length > 0 ? (
-                                      row.members.map((member, index) => (
-                                        <TableRow key={index}>
-                                          <TableCell>
-                                            {member.memberName}
-                                          </TableCell>
-                                          <TableCell>
-                                            {member.memberPhoneNumber}
-                                          </TableCell>
-                                          <TableCell>
-                                            {member.memberIdNumber}
-                                          </TableCell>
-                                          <TableCell>
-                                            {member.titleNumber}
-                                          </TableCell>
-                                        </TableRow>
-                                      ))
+                                      row.members.map((member, index) => {
+                                        console.log(
+                                          "Rendering Member:",
+                                          member
+                                        ); // Debugging log
+                                        return (
+                                          <TableRow key={index}>
+                                            <TableCell>
+                                              {member.memberName}
+                                            </TableCell>
+                                            <TableCell>
+                                              {member.memberPhoneNumber}
+                                            </TableCell>
+                                            <TableCell>
+                                              {member.memberIdNumber}
+                                            </TableCell>
+                                            <TableCell>
+                                              {member.titleNumber}
+                                            </TableCell>
+                                          </TableRow>
+                                        );
+                                      })
                                     ) : (
                                       <TableRow>
                                         <TableCell colSpan={4} align="center">
@@ -601,7 +617,6 @@ export default function DataTable() {
           </TableBody>
         </Table>
       </TableContainer>
-
       {/* Add/Edit Form Dialog */}
       {isFormOpen && (
         <AddFormDialog
@@ -613,7 +628,6 @@ export default function DataTable() {
           isEditMode={!!formData.id} // Pass a flag to indicate edit mode
         />
       )}
-
       {/* Representative Form Dialog */}
       {isRepresentativeFormOpen && (
         <RepresentativeForm
@@ -623,6 +637,7 @@ export default function DataTable() {
           onFormChange={handleFormChange}
           onFileChange={(e) => {
             const file = e.target.files[0];
+            console.log("File Change Detected:", e.target.name, file); // Debugging log
             setFormData({
               ...formData,
               [e.target.name]: URL.createObjectURL(file),
