@@ -41,7 +41,7 @@ const initialRows = [
     communityMember: "Jane Roe",
     idNumber: "987654321",
     phoneNumber: "+0987654321",
-    landSize: "30",
+    landSize: "30 acres",
     communityName: "Community B",
     sublocation: "Subloc B",
     location: "Loc B",
@@ -54,13 +54,27 @@ const initialRows = [
     gisDetails: "Not Available",
     mouDocument: "Uploaded",
     source: "Other", // Default source
+    members: [
+      {
+        memberName: "Alice Smith",
+        memberPhoneNumber: "+1234567890",
+        memberIdNumber: "M12345",
+        titleNumber: "T001",
+      },
+      {
+        memberName: "Bob Johnson",
+        memberPhoneNumber: "+0987654321",
+        memberIdNumber: "M67890",
+        titleNumber: "T002",
+      },
+    ],
   },
   {
     id: 1,
     communityMember: "John Doe",
     idNumber: "123456789",
     phoneNumber: "+1234567890",
-    landSize: "50",
+    landSize: "50 acres",
     sublocation: "Subloc A",
     location: "Loc A",
     fieldCoordinator: "Jane Smith",
@@ -73,6 +87,7 @@ const initialRows = [
     gisDetails: "Available",
     mouDocument: "Not Uploaded",
     source: "Other", // Default source
+    members: [],
   },
 ];
 
@@ -86,22 +101,23 @@ export default function DataTable() {
     React.useState(false); // State for Representative Form
   const [formData, setFormData] = React.useState({
     id: null, // Added ID for tracking during edit
-    communityMember: "",
-    idNumber: "",
-    phoneNumber: "",
+    representativeName: "",
+    representativeIdNumber: "",
+    representativePhone: "", // Corrected field name
     landSize: "",
+    communityName: "",
     sublocation: "",
     location: "",
+    gisDetails: "", // Added GIS details
     fieldCoordinator: "",
     dateSigned: null,
-    communityName: "",
     signedLocal: "",
     signedOrg: "",
     witnessLocal: "",
     loiDocument: "",
-    gisDetails: "",
     mouDocument: "",
     source: "Other", // Default source
+    members: [], // Array to store group member details
   });
 
   const handleExpand = (id) => {
@@ -132,22 +148,23 @@ export default function DataTable() {
     setIsRepresentativeFormOpen(false);
     setFormData({
       id: null,
-      communityMember: "",
-      idNumber: "",
-      phoneNumber: "",
+      representativeName: "",
+      representativeIdNumber: "",
+      representativePhone: "", // Reset representativePhone
       landSize: "",
-      sublocation: "",
-      location: "",
+      communityName: "",
+      sublocation: "", // Reset sublocation
+      location: "", // Reset location
+      gisDetails: "", // Reset GIS details
       fieldCoordinator: "",
       dateSigned: null,
-      communityName: "",
       signedLocal: "",
       signedOrg: "",
       witnessLocal: "",
       loiDocument: "",
-      gisDetails: "",
       mouDocument: "",
       source: "Other", // Reset source
+      members: [], // Reset members array
     });
   };
 
@@ -165,7 +182,15 @@ export default function DataTable() {
         row.id === formData.id
           ? {
               ...formData,
+              communityMember:
+                formData.representativeName || formData.communityMember,
+              idNumber: formData.representativeIdNumber || formData.idNumber,
+              phoneNumber: formData.representativePhone || formData.phoneNumber, // Map representativePhone to phoneNumber
               landSize: `${formData.landSize || "N/A"} acres`,
+              communityName: formData.communityName,
+              sublocation: formData.sublocation || "N/A", // Map sublocation
+              location: formData.location || "N/A", // Map location
+              gisDetails: formData.gisDetails || "Not Available", // Map GIS details
               dateSigned: formData.dateSigned?.format("YYYY-MM-DD") || "",
             }
           : row
@@ -177,22 +202,23 @@ export default function DataTable() {
       const newRow = {
         id: Date.now(),
         communityMember:
-          formData.representativeName || formData.communityMember, // Map Representative Name
-        idNumber: formData.representativeIdNumber || formData.idNumber, // Map Representative ID Number
-        phoneNumber: formData.representativePhone || formData.phoneNumber, // Map Representative Phone
-        landSize: `${formData.landSize || "N/A"} acres`, // Default to "N/A" if no land size
-        communityName: formData.communityName, // Map Community Name
-        sublocation: formData.sublocation || "N/A",
-        location: formData.location || "N/A",
+          formData.representativeName || formData.communityMember,
+        idNumber: formData.representativeIdNumber || formData.idNumber,
+        phoneNumber: formData.representativePhone || formData.phoneNumber, // Map representativePhone to phoneNumber
+        landSize: `${formData.landSize || "N/A"} acres`,
+        communityName: formData.communityName,
+        sublocation: formData.sublocation || "N/A", // Map sublocation
+        location: formData.location || "N/A", // Map location
+        gisDetails: formData.gisDetails || "Not Available", // Map GIS details
         fieldCoordinator: formData.fieldCoordinator || "N/A",
         dateSigned: formData.dateSigned?.format("YYYY-MM-DD") || "",
         signedLocal: formData.signedLocal || "No",
         signedOrg: formData.signedOrg || "No",
         witnessLocal: formData.witnessLocal || "N/A",
         loiDocument: formData.loiDocument || "Not Uploaded",
-        gisDetails: formData.gisDetails || "Not Available",
         mouDocument: formData.mouDocument || "Not Uploaded",
         source: isRepresentativeFormOpen ? "RepresentativeForm" : "Other", // Set source based on form type
+        members: formData.members || [], // Include members array
       };
       setRows([...rows, newRow]);
       setFilteredRows([...filteredRows, newRow]);
@@ -254,6 +280,7 @@ export default function DataTable() {
           </Button>
         </Box>
       </Box>
+
       {/* Table Content */}
       <TableContainer component={Paper}>
         <Table>
@@ -279,9 +306,7 @@ export default function DataTable() {
                   <TableCell className="main-column">
                     {row.phoneNumber}
                   </TableCell>
-                  <TableCell className="main-column">
-                    {row.landSize} acres
-                  </TableCell>
+                  <TableCell className="main-column">{row.landSize}</TableCell>
                   <TableCell className="main-column">
                     {row.communityName}
                   </TableCell>
@@ -369,13 +394,21 @@ export default function DataTable() {
                               </span>
                             </div>
                             <div className="detail-item">
-                              <span className="detail-label">GIS Info:</span>
-                              <Tooltip title="View GIS Polygon">
-                                <IconButton size="small">
-                                  <MapIcon />{" "}
-                                  {/* Use an appropriate map icon here */}
-                                </IconButton>
-                              </Tooltip>
+                              <span className="detail-label">GIS File:</span>
+                              {row.gisDetails &&
+                              row.gisDetails !== "Not Available" ? (
+                                <a
+                                  href={row.gisDetails}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  View GIS File
+                                </a>
+                              ) : (
+                                <span className="detail-value">
+                                  Not Available
+                                </span>
+                              )}
                             </div>
                           </CardContent>
                         </Card>
@@ -404,25 +437,39 @@ export default function DataTable() {
                               <span className="detail-label">
                                 LOI Document:
                               </span>
-                              <a
-                                href={row.loiDocument}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                View LOI
-                              </a>
+                              {row.loiDocument &&
+                              row.loiDocument !== "Not Uploaded" ? (
+                                <a
+                                  href={row.loiDocument}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  View LOI
+                                </a>
+                              ) : (
+                                <span className="detail-value">
+                                  Not Uploaded
+                                </span>
+                              )}
                             </div>
                             <div className="detail-item">
                               <span className="detail-label">
                                 MOU Document:
                               </span>
-                              <a
-                                href={row.mouDocument}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                View MOU
-                              </a>
+                              {row.mouDocument &&
+                              row.mouDocument !== "Not Uploaded" ? (
+                                <a
+                                  href={row.mouDocument}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  View MOU
+                                </a>
+                              ) : (
+                                <span className="detail-value">
+                                  Not Uploaded
+                                </span>
+                              )}
                             </div>
                           </CardContent>
                         </Card>
@@ -485,7 +532,6 @@ export default function DataTable() {
                             </Grid>
                           </CardContent>
                         </Card>
-
                         {/* Conditional Fourth Card for RepresentativeForm Source */}
                         {row.source === "RepresentativeForm" && (
                           <Card
@@ -503,32 +549,46 @@ export default function DataTable() {
                                 variant="h6"
                                 className="detail-header"
                               >
-                                Representative Details
+                                Group Member Details
                               </Typography>
-                              <div className="detail-item">
-                                <span className="detail-label">
-                                  Representative Name:
-                                </span>
-                                <span className="detail-value">
-                                  {row.communityMember}
-                                </span>
-                              </div>
-                              <div className="detail-item">
-                                <span className="detail-label">
-                                  Representative ID:
-                                </span>
-                                <span className="detail-value">
-                                  {row.idNumber}
-                                </span>
-                              </div>
-                              <div className="detail-item">
-                                <span className="detail-label">
-                                  Representative Phone:
-                                </span>
-                                <span className="detail-value">
-                                  {row.phoneNumber}
-                                </span>
-                              </div>
+                              <TableContainer component={Paper}>
+                                <Table size="small">
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell>Member Name</TableCell>
+                                      <TableCell>Member Phone Number</TableCell>
+                                      <TableCell>Member ID</TableCell>
+                                      <TableCell>Title Number</TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {row.members && row.members.length > 0 ? (
+                                      row.members.map((member, index) => (
+                                        <TableRow key={index}>
+                                          <TableCell>
+                                            {member.memberName}
+                                          </TableCell>
+                                          <TableCell>
+                                            {member.memberPhoneNumber}
+                                          </TableCell>
+                                          <TableCell>
+                                            {member.memberIdNumber}
+                                          </TableCell>
+                                          <TableCell>
+                                            {member.titleNumber}
+                                          </TableCell>
+                                        </TableRow>
+                                      ))
+                                    ) : (
+                                      <TableRow>
+                                        <TableCell colSpan={4} align="center">
+                                          No members available
+                                        </TableCell>
+                                      </TableRow>
+                                    )}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
                             </CardContent>
                           </Card>
                         )}
@@ -541,6 +601,7 @@ export default function DataTable() {
           </TableBody>
         </Table>
       </TableContainer>
+
       {/* Add/Edit Form Dialog */}
       {isFormOpen && (
         <AddFormDialog
@@ -552,6 +613,7 @@ export default function DataTable() {
           isEditMode={!!formData.id} // Pass a flag to indicate edit mode
         />
       )}
+
       {/* Representative Form Dialog */}
       {isRepresentativeFormOpen && (
         <RepresentativeForm
@@ -559,6 +621,13 @@ export default function DataTable() {
           onClose={handleCloseForm}
           formData={formData}
           onFormChange={handleFormChange}
+          onFileChange={(e) => {
+            const file = e.target.files[0];
+            setFormData({
+              ...formData,
+              [e.target.name]: URL.createObjectURL(file),
+            });
+          }}
           onSubmit={handleSubmit}
         />
       )}

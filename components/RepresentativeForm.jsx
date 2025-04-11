@@ -131,6 +131,24 @@ export default function RepresentativeForm({
                     fullWidth
                   />
                 </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    name="sublocation"
+                    label="Sublocation"
+                    value={formData.sublocation}
+                    onChange={onFormChange}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    name="location"
+                    label="Location"
+                    value={formData.location}
+                    onChange={onFormChange}
+                    fullWidth
+                  />
+                </Grid>
               </Grid>
             </Box>
 
