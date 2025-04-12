@@ -1,4 +1,4 @@
-/* index.css */
+/* General Styles */
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
@@ -6,13 +6,11 @@ body {
   color: #e0e0e0;
   line-height: 1.6;
 }
-
 .app-container {
   display: flex;
   min-height: 100vh;
   background-color: #1e1e1e;
 }
-
 .main-content {
   flex: 1;
   padding: 20px;
@@ -20,7 +18,6 @@ body {
   color: #e0e0e0;
   transition: padding 0.3s ease;
 }
-
 .section-title {
   font-size: 1.5rem;
   font-weight: 600;
@@ -29,7 +26,6 @@ body {
   position: relative;
   padding-left: 20px;
 }
-
 .section-title::before {
   content: "";
   position: absolute;
@@ -41,20 +37,17 @@ body {
   background-color: #4caf50;
   border-radius: 2px;
 }
-
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 24px;
 }
-
 .charts-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-top: 24px;
 }
-
 .chart-wrapper {
   background-color: #2b2b2b;
   border-radius: 12px;
@@ -65,22 +58,18 @@ body {
     box-shadow 0.3s ease;
   height: 500px;
 }
-
 .chart-wrapper:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
-
 .card-header {
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 1px solid #444;
 }
-
 .map-container {
   height: calc(100% - 60px);
 }
-
 .file-input {
   margin-bottom: 20px;
   display: block;
@@ -91,178 +80,93 @@ body {
   border-radius: 4px;
   color: #e0e0e0;
 }
-
 .gMaps {
   height: 100%;
   width: 100%;
   border-radius: 4px;
 }
-
 /* Responsive Design */
 @media (max-width: 1200px) {
   .charts-container {
     grid-template-columns: 1fr;
   }
-
   .chart-wrapper {
     min-width: 100%;
   }
 }
-
 /* Add these to your existing DataGrid styles */
 .MuiDataGrid-root {
   background-color: #1e1e1e !important; /* Match your app's dark theme */
   border: none !important;
   color: #e0e0e0 !important;
 }
-
 .MuiDataGrid-row {
   background-color: #2b2b2b !important; /* Base row color */
 }
-
 .MuiDataGrid-row:hover {
   background-color: rgba(255, 255, 255, 0.05) !important;
 }
-
 .MuiDataGrid-cell:focus {
   outline: none !important; /* Remove blue outline on focus */
 }
-
 .MuiDataGrid-columnHeader:focus,
 .MuiDataGrid-cell:focus {
   outline: none !important;
 }
-
 /* Dark theme styles for Data Table */
 .data-table {
   background-color: #1e1e1e !important;
 }
-
 .dark-table {
   background-color: #2b2b2b !important;
   border: 1px solid #444 !important;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
 }
-
 .table-row {
   background-color: #2b2b2b !important;
 }
-
 .table-row:hover {
   background-color: rgba(255, 255, 255, 0.05) !important;
 }
-
 .table-cell {
   color: #e0e0e0 !important;
   border-bottom: 1px solid #444 !important;
 }
-
 .detail-panel {
   background-color: #3a3a3a !important;
   border-top: 1px solid #555 !important;
 }
-
 .dark-detail {
   background-color: #3a3a3a !important;
   color: #e0e0e0 !important;
 }
-
 .detail-item {
   color: #e0e0e0 !important;
   margin: 8px 0;
 }
-
 .detail-header {
   color: #4caf50 !important;
   margin-bottom: 12px;
 }
-
 .table-button {
   color: #e0e0e0 !important;
 }
-
 .table-button:hover {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
-
 .expand-column {
   width: 50px !important;
 }
-
 .main-column {
   width: 15% !important;
 }
-/* this is for the icons */
-/* Existing styles */
-.data-table {
-  max-width: 12000px;
-  margin: 2rem auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.data-table table {
-  table-layout: fixed;
-}
-
-.data-table th,
-.data-table td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.expand-column {
-  width: 50px;
-}
-
-.main-column {
-  width: 15%;
-}
-
-.detail-panel {
-  background-color: #f8f9fa !important;
-  border-top: 2px solid #e0e0e0 !important;
-}
-
-.detail-section {
-  margin-bottom: 1.5rem;
-}
-
-.detail-section:last-child {
-  margin-bottom: 0;
-}
-
-.detail-label {
-  font-weight: 500;
-  color: #666;
-}
-
-.detail-value {
-  color: #333;
-  word-break: break-word;
-}
-
-/* New styles for icons */
 .action-column {
   width: 140px !important;
   text-align: right;
 }
-
 .action-column .MuiIconButton-root {
   margin-left: 4px;
 }
-
-.table-button {
-  color: #e0e0e0 !important;
-}
-
-.table-button:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-/* 
-Table buttons, search and filter */
-
-/* Updated components styling */
 .table-header {
   display: flex;
   justify-content: space-between;
@@ -272,7 +176,6 @@ Table buttons, search and filter */
   gap: 16px;
   padding: 0 20px;
 }
-
 .search-bar {
   flex: 1;
   max-width: 300px;
@@ -282,26 +185,21 @@ Table buttons, search and filter */
   color: #e0e0e0;
   min-height: 40px; /* Reduced height */
 }
-
 .search-bar .MuiOutlinedInput-root {
   color: #e0e0e0;
   border-color: #555;
   padding: 6px; /* Reduced padding */
 }
-
 .search-bar .MuiOutlinedInput-input {
   padding: 6px 12px; /* Adjust input padding */
 }
-
 .search-bar .MuiOutlinedInput-notchedOutline {
   border-color: #555 !important;
 }
-
 .action-buttons {
   display: flex;
   gap: 24px; /* Increased space between buttons */
 }
-
 .action-buttons .MuiButton-containedPrimary {
   background-color: #4caf50 !important;
   color: white !important;
@@ -309,190 +207,24 @@ Table buttons, search and filter */
   border-radius: 4px;
   min-height: 36px; /* Match reduced search bar height */
 }
-
 .action-buttons .MuiButton-containedPrimary:hover {
   background-color: #45a049 !important;
 }
-
 .filter-icon {
   color: #e0e0e0;
   margin-left: 8px;
   cursor: pointer;
 }
-
 .filter-icon:hover {
   color: #ffffff;
 }
-
-/* Existing styles */
-.detail-panel {
-  background-color: #2b2b2b !important;
-  border-top: 2px solid #444 !important;
-}
-
-.detail-header {
-  color: #4caf50 !important;
-}
-
-.detail-label {
-  color: #e0e0e0;
-}
-
-.detail-value {
-  color: #e0e0e0;
-  word-break: break-word;
-}
-
-.table-button {
-  color: #e0e0e0 !important;
-}
-
-.table-button:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Existing styles */
-.data-table {
-  max-width: 11000px;
-  margin: 2rem auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.data-table table {
-  table-layout: fixed;
-}
-
-.data-table th,
-.data-table td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.expand-column {
-  width: 50px;
-}
-
-.main-column {
-  width: 15%;
-}
-
-.detail-panel {
-  background-color: #2b2b2b !important;
-  border-top: 2px solid #444 !important;
-}
-
-.detail-section {
-  margin-bottom: 1.5rem;
-}
-
-.detail-section:last-child {
-  margin-bottom: 0;
-}
-
-.detail-label {
-  font-weight: 500;
-  color: #e0e0e0;
-}
-
-.detail-value {
-  color: #e0e0e0;
-  word-break: break-word;
-}
-
-/* New components styling */
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 0 20px;
-}
-
-.search-bar {
-  flex: 1;
-  max-width: 300px;
-  background: #3a3a3a;
-  border: 1px solid #555;
-  border-radius: 4px;
-  color: #e0e0e0;
-  min-height: 40px;
-}
-
-.search-bar .MuiOutlinedInput-root {
-  color: #e0e0e0;
-  border-color: #555;
-}
-
-.search-bar .MuiOutlinedInput-input {
-  padding: 6px 12px;
-}
-
-.action-buttons {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.add-button {
-  background-color: #4caf50 !important;
-  color: white !important;
-  padding: 6px 16px;
-  border-radius: 4px;
-  min-height: 36px;
-  text-transform: none;
-}
-
-.add-button:hover {
-  background-color: #45a049 !important;
-}
-
-.filter-icon {
-  color: #e0e0e0;
-  margin-left: 8px;
-  cursor: pointer;
-}
-
-.filter-icon:hover {
-  color: #ffffff;
-}
-
-/* Dark dialog styling */
-.dark-dialog .MuiPaper-root {
-  background-color: #2b2b2b !important;
-  color: #e0e0e0 !important;
-}
-
-.dark-dialog .MuiOutlinedInput-root {
-  color: #e0e0e0 !important;
-}
-
-.dark-dialog .MuiInputLabel-root {
-  color: #e0e0e0 !important;
-}
-
-.dark-dialog .MuiOutlinedInput-notchedOutline {
-  border-color: #555 !important;
-}
-
-.dark-dialog .MuiButton-containedPrimary {
-  background-color: #4caf50 !important;
-}
-
-.dark-dialog .MuiButton-outlinedSecondary {
-  color: #ff4444 !important;
-  border-color: #ff4444 !important;
-}
-/* New card styles */
+/* Card Styles (Untouched) */
 .card-container {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   padding: 20px;
 }
-
 .detail-card {
   flex: 1 1 48%;
   background-color: #2b2b2b;
@@ -500,67 +232,53 @@ Table buttons, search and filter */
   transition: all 0.3s ease;
   margin: 8px 0;
 }
-
 .detail-card.active-card {
   border-color: #4caf50;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   transform: translateX(10px);
 }
-
 .detail-card .MuiCardContent-root {
   padding: 16px !important;
 }
-
 .detail-card .detail-header {
   margin-bottom: 12px;
 }
-
 .detail-card .detail-item {
   margin-bottom: 8px;
 }
-
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .detail-card {
     flex: 1 1 100%;
   }
 }
-
 /* Existing styles remain */
 .detail-panel {
   background-color: #2b2b2b !important;
   border-top: 2px solid #444 !important;
 }
-
 .detail-header {
   color: #4caf50 !important;
 }
-
 .detail-label {
   color: #e0e0e0;
   font-weight: 500;
 }
-
 .detail-value {
   color: #e0e0e0;
   word-break: break-word;
 }
-
 .table-button {
   color: #e0e0e0 !important;
 }
-
 .table-button:hover {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
-
 /* Forms Styling */
-
 /* General Styles */
 .dialog-container {
   font-family: "Roboto", sans-serif;
 }
-
 .dialog-title {
   font-size: 1.5rem;
   font-weight: bold;
@@ -570,11 +288,9 @@ Table buttons, search and filter */
   background-color: #f5f5f5;
   border-bottom: 1px solid #ddd;
 }
-
 .dialog-content {
   padding: 24px;
 }
-
 .section-header {
   font-size: 1.2rem;
   font-weight: bold;
@@ -583,24 +299,20 @@ Table buttons, search and filter */
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-
 .text-field {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   transition: border-color 0.3s ease;
 }
-
 .text-field:focus-within {
   border-color: #4caf50;
   box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
 }
-
 .date-picker {
   background-color: #fff;
   border-radius: 8px;
 }
-
 .file-upload {
   background-color: #f9f9f9;
   border: 1px dashed #aaa;
@@ -608,15 +320,12 @@ Table buttons, search and filter */
   padding: 12px;
   transition: border-color 0.3s ease;
 }
-
 .file-upload:hover {
   border-color: #4caf50;
 }
-
 .grid-item {
   margin-bottom: 16px;
 }
-
 .member-box {
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -625,22 +334,18 @@ Table buttons, search and filter */
   background-color: #fafafa;
   transition: box-shadow 0.3s ease;
 }
-
 .member-box:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 .remove-member-button {
   background-color: #ff4d4d;
   color: #fff;
   border-radius: 4px;
   transition: background-color 0.3s ease;
 }
-
 .remove-member-button:hover {
   background-color: #e53935;
 }
-
 .add-member-fab {
   position: fixed;
   bottom: 20px;
@@ -649,11 +354,9 @@ Table buttons, search and filter */
   color: #fff;
   transition: background-color 0.3s ease;
 }
-
 .add-member-fab:hover {
   background-color: #388e3c;
 }
-
 .dialog-actions {
   display: flex;
   justify-content: space-between;
@@ -661,23 +364,19 @@ Table buttons, search and filter */
   background-color: #f5f5f5;
   border-top: 1px solid #ddd;
 }
-
 .cancel-button {
   background-color: #ff4d4d;
   color: #fff;
   transition: background-color 0.3s ease;
 }
-
 .cancel-button:hover {
   background-color: #e53935;
 }
-
 .submit-button {
   background-color: #4caf50;
   color: #fff;
   transition: background-color 0.3s ease;
 }
-
 .submit-button:hover {
   background-color: #388e3c;
 }

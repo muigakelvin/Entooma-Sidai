@@ -99,7 +99,6 @@ export default function DataTable() {
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [isRepresentativeFormOpen, setIsRepresentativeFormOpen] =
     React.useState(false); // State for Representative Form
-
   // Initial states for Individual and Representative forms
   const initialIndividualFormData = {
     id: null,
@@ -121,7 +120,6 @@ export default function DataTable() {
     source: "Other",
     members: [],
   };
-
   const initialRepresentativeFormData = {
     id: null,
     representativeName: "",
@@ -142,7 +140,6 @@ export default function DataTable() {
     source: "RepresentativeForm",
     members: [],
   };
-
   const [formData, setFormData] = React.useState(initialIndividualFormData);
 
   const handleExpand = (id) => {
@@ -200,51 +197,6 @@ export default function DataTable() {
   const handleSubmit = (submittedData) => {
     console.log("Submit Button Clicked"); // Debugging log
     console.log("Received Submitted Data:", submittedData); // Debugging log
-
-    // Log each field and its mapping destination
-    console.log("Mapping Fields:");
-    console.log(
-      "- communityMember ->",
-      submittedData.representativeName || submittedData.communityMember
-    );
-    console.log(
-      "- idNumber ->",
-      submittedData.representativeIdNumber || submittedData.idNumber
-    );
-    console.log(
-      "- phoneNumber ->",
-      submittedData.representativePhone || submittedData.phoneNumber
-    );
-    console.log("- landSize ->", `${submittedData.landSize || "N/A"} acres`);
-    console.log("- communityName ->", submittedData.communityName);
-    console.log("- sublocation ->", submittedData.sublocation || "N/A");
-    console.log("- location ->", submittedData.location || "N/A");
-    console.log("- gisDetails ->", submittedData.gisDetails || "Not Available");
-    console.log(
-      "- fieldCoordinator ->",
-      submittedData.fieldCoordinator || "N/A"
-    );
-    console.log(
-      "- dateSigned ->",
-      submittedData.dateSigned?.format("YYYY-MM-DD") || ""
-    );
-    console.log("- signedLocal ->", submittedData.signedLocal || "No");
-    console.log("- signedOrg ->", submittedData.signedOrg || "No");
-    console.log("- witnessLocal ->", submittedData.witnessLocal || "N/A");
-    console.log(
-      "- loiDocument ->",
-      submittedData.loiDocument || "Not Uploaded"
-    );
-    console.log(
-      "- mouDocument ->",
-      submittedData.mouDocument || "Not Uploaded"
-    );
-    console.log(
-      "- source ->",
-      isRepresentativeFormOpen ? "RepresentativeForm" : "Other"
-    );
-    console.log("- members ->", submittedData.members || []);
-
     // Prepare the new row with proper field mapping
     const newRow = {
       id: submittedData.id || Date.now(), // Use existing ID for edits, generate new ID for adds
@@ -254,7 +206,7 @@ export default function DataTable() {
       phoneNumber:
         submittedData.representativePhone || submittedData.phoneNumber,
       landSize: `${submittedData.landSize || "N/A"} acres`,
-      communityName: submittedData.communityName || "N/A",
+      communityName: submittedData.communityName || "N/A", // Ensure communityName is included
       sublocation: submittedData.sublocation || "N/A",
       location: submittedData.location || "N/A",
       gisDetails: submittedData.gisDetails || "Not Available",
@@ -268,9 +220,7 @@ export default function DataTable() {
       source: isRepresentativeFormOpen ? "RepresentativeForm" : "Other",
       members: submittedData.members || [],
     };
-
     console.log("New Row Created:", newRow); // Debugging log
-
     if (submittedData.id) {
       // Update existing record
       const updatedRows = rows.map((row) =>
@@ -285,18 +235,63 @@ export default function DataTable() {
       setRows([...rows, newRow]);
       setFilteredRows([...filteredRows, newRow]);
     }
-
     handleCloseForm();
   };
 
   const handleEdit = (id) => {
     const rowToEdit = rows.find((row) => row.id === id);
     console.log("Editing Row:", rowToEdit); // Debugging log
-    setFormData({
-      ...rowToEdit,
-      dateSigned: rowToEdit.dateSigned ? dayjs(rowToEdit.dateSigned) : null, // Ensure date is parsed correctly
-    });
-    setIsFormOpen(true);
+    if (rowToEdit.source === "RepresentativeForm") {
+      // Map fields for RepresentativeForm
+      setFormData({
+        id: rowToEdit.id,
+        representativeName: rowToEdit.communityMember || "", // Map communityMember to representativeName
+        representativeIdNumber: rowToEdit.idNumber || "", // Map idNumber to representativeIdNumber
+        representativePhone: rowToEdit.phoneNumber || "", // Map phoneNumber to representativePhone
+        landSize: rowToEdit.landSize.replace(" acres", "") || "", // Remove " acres" suffix
+        communityName: rowToEdit.communityName || "", // Ensure communityName is included
+        sublocation: rowToEdit.sublocation || "",
+        location: rowToEdit.location || "",
+        gisDetails: rowToEdit.gisDetails || "",
+        fieldCoordinator: rowToEdit.fieldCoordinator || "",
+        dateSigned: rowToEdit.dateSigned ? dayjs(rowToEdit.dateSigned) : null, // Parse date with dayjs
+        signedLocal: rowToEdit.signedLocal || "",
+        signedOrg: rowToEdit.signedOrg || "",
+        witnessLocal: rowToEdit.witnessLocal || "",
+        loiDocument: rowToEdit.loiDocument || "",
+        mouDocument: rowToEdit.mouDocument || "",
+        source: "RepresentativeForm",
+        members: rowToEdit.members || [],
+      });
+      setIsRepresentativeFormOpen(true);
+      setIsFormOpen(false);
+      console.log("Opening Representative Form for Edit"); // Debugging log
+    } else {
+      // Map fields for Individual Form
+      setFormData({
+        id: rowToEdit.id,
+        communityMember: rowToEdit.communityMember || "",
+        idNumber: rowToEdit.idNumber || "",
+        phoneNumber: rowToEdit.phoneNumber || "",
+        landSize: rowToEdit.landSize.replace(" acres", "") || "", // Remove " acres" suffix
+        communityName: rowToEdit.communityName || "", // Ensure communityName is included
+        sublocation: rowToEdit.sublocation || "",
+        location: rowToEdit.location || "",
+        gisDetails: rowToEdit.gisDetails || "",
+        fieldCoordinator: rowToEdit.fieldCoordinator || "",
+        dateSigned: rowToEdit.dateSigned ? dayjs(rowToEdit.dateSigned) : null, // Parse date with dayjs
+        signedLocal: rowToEdit.signedLocal || "",
+        signedOrg: rowToEdit.signedOrg || "",
+        witnessLocal: rowToEdit.witnessLocal || "",
+        loiDocument: rowToEdit.loiDocument || "",
+        mouDocument: rowToEdit.mouDocument || "",
+        source: "Other",
+        members: rowToEdit.members || [],
+      });
+      setIsFormOpen(true);
+      setIsRepresentativeFormOpen(false);
+      console.log("Opening Individual Form for Edit"); // Debugging log
+    }
   };
 
   const handleDelete = (id) => {
@@ -345,7 +340,6 @@ export default function DataTable() {
           </Button>
         </Box>
       </Box>
-
       {/* Table Content */}
       <TableContainer component={Paper}>
         <Table>
@@ -409,7 +403,6 @@ export default function DataTable() {
                     </Tooltip>
                   </TableCell>
                 </TableRow>
-
                 {/* Detail Row */}
                 <TableRow>
                   <TableCell
@@ -478,7 +471,6 @@ export default function DataTable() {
                             </div>
                           </CardContent>
                         </Card>
-
                         {/* Documentation Card */}
                         <Card
                           variant="outlined"
@@ -540,7 +532,6 @@ export default function DataTable() {
                             </div>
                           </CardContent>
                         </Card>
-
                         {/* Approved Signatories Card */}
                         <Card
                           variant="outlined"
@@ -600,7 +591,6 @@ export default function DataTable() {
                             </Grid>
                           </CardContent>
                         </Card>
-
                         {/* Conditional Fourth Card for RepresentativeForm Source */}
                         {row.source === "RepresentativeForm" && (
                           <Card
@@ -614,6 +604,21 @@ export default function DataTable() {
                             }}
                           >
                             <CardContent>
+                              {/* Group Name Section */}
+                              <Typography
+                                variant="h5"
+                                align="center"
+                                gutterBottom
+                                sx={{
+                                  fontWeight: "bold",
+                                  color: "#333",
+                                  marginBottom: 2,
+                                }}
+                              >
+                                {row.communityName}
+                              </Typography>
+
+                              {/* Group Member Details Section */}
                               <Typography
                                 variant="h6"
                                 className="detail-header"
@@ -676,7 +681,6 @@ export default function DataTable() {
           </TableBody>
         </Table>
       </TableContainer>
-
       {/* Add/Edit Form Dialog */}
       {isFormOpen && (
         <AddFormDialog
@@ -688,7 +692,6 @@ export default function DataTable() {
           isEditMode={!!formData.id} // Pass a flag to indicate edit mode
         />
       )}
-
       {/* Representative Form Dialog */}
       {isRepresentativeFormOpen && (
         <RepresentativeForm
