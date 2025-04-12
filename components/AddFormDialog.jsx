@@ -13,6 +13,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
+import "../index.css"; // Import the CSS file
 
 export default function AddFormDialog({
   open,
@@ -22,143 +23,153 @@ export default function AddFormDialog({
   onFileChange,
   onSubmit,
 }) {
-  // Function to handle form submission
   const handleSubmit = () => {
     onSubmit(formData);
   };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>
+      <DialogTitle className="dialog-title">
         {formData.id ? "Edit Record" : "Add New Record"}
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className="dialog-content">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Box component="form" sx={{ mt: 2 }}>
+          <Box component="form" className="form-container">
             {/* Member Details Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Box className="section-box">
+              <Typography variant="h6" className="section-header">
                 Member Details
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="communityMember"
                     label="Name"
                     value={formData.communityMember}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="idNumber"
                     label="ID Number"
                     value={formData.idNumber}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="phoneNumber"
                     label="Phone Number"
                     value={formData.phoneNumber}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="communityName"
                     label="Community Name"
                     value={formData.communityName}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
               </Grid>
             </Box>
 
             {/* Land Details Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Box className="section-box">
+              <Typography variant="h6" className="section-header">
                 Land Details
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="landSize"
                     label="Land Size (acres)"
                     value={formData.landSize}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="sublocation"
                     label="Sublocation"
                     value={formData.sublocation}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="location"
                     label="Location"
                     value={formData.location}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
               </Grid>
             </Box>
 
             {/* Authorized Signatories Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Box className="section-box">
+              <Typography variant="h6" className="section-header">
                 Authorized Signatories
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="fieldCoordinator"
                     label="Field Coordinator"
                     value={formData.fieldCoordinator}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="witnessLocal"
                     label="Local Witness"
                     value={formData.witnessLocal}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="signedLocal"
                     label="Signed (Local)"
                     value={formData.signedLocal}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="signedOrg"
                     label="Signed (Org)"
                     value={formData.signedOrg}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <DatePicker
                     label="Date Signed"
                     value={formData.dateSigned}
@@ -168,7 +179,11 @@ export default function AddFormDialog({
                       })
                     }
                     renderInput={(params) => (
-                      <TextField {...params} fullWidth />
+                      <TextField
+                        {...params}
+                        fullWidth
+                        className="date-picker"
+                      />
                     )}
                   />
                 </Grid>
@@ -176,12 +191,12 @@ export default function AddFormDialog({
             </Box>
 
             {/* Documents and GIS Information Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Box className="section-box">
+              <Typography variant="h6" className="section-header">
                 Documents and GIS Information
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     type="file"
                     name="loiDocument"
@@ -189,9 +204,10 @@ export default function AddFormDialog({
                     inputProps={{ accept: ".pdf" }}
                     onChange={onFileChange}
                     fullWidth
+                    className="file-upload"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     type="file"
                     name="mouDocument"
@@ -199,9 +215,10 @@ export default function AddFormDialog({
                     inputProps={{ accept: ".pdf" }}
                     onChange={onFileChange}
                     fullWidth
+                    className="file-upload"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     type="file"
                     name="gisDetails"
@@ -209,6 +226,7 @@ export default function AddFormDialog({
                     inputProps={{ accept: ".gpx,.kml" }}
                     onChange={onFileChange}
                     fullWidth
+                    className="file-upload"
                   />
                 </Grid>
               </Grid>
@@ -216,11 +234,11 @@ export default function AddFormDialog({
           </Box>
         </LocalizationProvider>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="secondary">
+      <DialogActions className="dialog-actions">
+        <Button onClick={onClose} className="cancel-button">
           Cancel
         </Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
+        <Button onClick={handleSubmit} className="submit-button">
           {formData.id ? "Update Record" : "Add Record"}
         </Button>
       </DialogActions>

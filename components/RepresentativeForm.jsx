@@ -15,7 +15,8 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
-import AddIcon from "@mui/icons-material/Add"; // Import Add Icon
+import AddIcon from "@mui/icons-material/Add";
+import "../index.css"; // Import the CSS file
 
 export default function RepresentativeForm({
   open,
@@ -36,25 +37,14 @@ export default function RepresentativeForm({
     ]
   );
 
-  React.useEffect(() => {
-    console.log("Initial Members State:", members); // Log initial state of members
-  }, []);
-
-  // Function to handle changes in member fields
   const handleMemberChange = (index, field, value) => {
-    console.log(
-      `Updating Member at index ${index}, field: ${field}, value: ${value}`
-    ); // Debugging log
     const updatedMembers = members.map((member, i) =>
       i === index ? { ...member, [field]: value } : member
     );
-    console.log("Updated Members Array:", updatedMembers); // Log updated members array
     setMembers(updatedMembers);
   };
 
-  // Function to add a new member field
   const addMemberField = () => {
-    console.log("Adding new member field"); // Debugging log
     setMembers([
       ...members,
       {
@@ -66,15 +56,11 @@ export default function RepresentativeForm({
     ]);
   };
 
-  // Function to remove a member field
   const removeMemberField = (index) => {
-    console.log(`Removing member at index ${index}`); // Debugging log
     const updatedMembers = members.filter((_, i) => i !== index);
-    console.log("Updated Members Array After Removal:", updatedMembers); // Log updated array
     setMembers(updatedMembers);
   };
 
-  // Validate members before submission
   const validateMembers = () => {
     const isValid = members.every(
       (member) => member.memberName && member.memberPhoneNumber
@@ -86,118 +72,117 @@ export default function RepresentativeForm({
     return true;
   };
 
-  // Function to handle form submission
   const handleSubmit = () => {
     if (!validateMembers()) return;
-    console.log("Final Members Data Before Submission:", members); // Debugging log
     onSubmit({ ...formData, members });
   };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>
+      <DialogTitle className="dialog-title">
         {formData.id ? "Edit Representative" : "Add New Representative"}
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className="dialog-content">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Box component="form" sx={{ mt: 2 }}>
+          <Box component="form" className="form-container">
             {/* Community Group Details Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Box className="section-box">
+              <Typography variant="h6" className="section-header">
                 Community Group Details
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="groupName"
                     label="Group Name"
                     value={formData.groupName}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="representativeName"
                     label="Representative Name"
                     value={formData.representativeName}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="representativeIdNumber"
                     label="Representative ID Number"
                     value={formData.representativeIdNumber}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="representativePhone"
                     label="Representative Phone Number"
                     value={formData.representativePhone}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="communityName"
                     label="Community Name"
                     value={formData.communityName}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="landSize"
                     label="Land Size (acres)"
                     value={formData.landSize}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="sublocation"
                     label="Sublocation"
                     value={formData.sublocation}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="location"
                     label="Location"
                     value={formData.location}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
               </Grid>
             </Box>
+
             {/* Group Members Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Box className="section-box">
+              <Typography variant="h6" className="section-header">
                 Group Member Details
               </Typography>
               {members.map((member, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    border: "1px solid #ccc",
-                    p: 2,
-                    borderRadius: "8px",
-                    mb: 2,
-                  }}
-                >
+                <Box key={index} className="member-box">
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={6} className="grid-item">
                       <TextField
                         name={`memberName-${index}`}
                         label="Member Name"
@@ -210,9 +195,10 @@ export default function RepresentativeForm({
                           )
                         }
                         fullWidth
+                        className="text-field"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={6} className="grid-item">
                       <TextField
                         name={`memberPhoneNumber-${index}`}
                         label="Member Phone Number"
@@ -225,9 +211,10 @@ export default function RepresentativeForm({
                           )
                         }
                         fullWidth
+                        className="text-field"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={6} className="grid-item">
                       <TextField
                         name={`memberIdNumber-${index}`}
                         label="Member ID Number"
@@ -240,9 +227,10 @@ export default function RepresentativeForm({
                           )
                         }
                         fullWidth
+                        className="text-field"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={6} className="grid-item">
                       <TextField
                         name={`titleNumber-${index}`}
                         label="Title Number"
@@ -255,14 +243,14 @@ export default function RepresentativeForm({
                           )
                         }
                         fullWidth
+                        className="text-field"
                       />
                     </Grid>
                   </Grid>
                   <Button
                     onClick={() => removeMemberField(index)}
-                    color="error"
-                    sx={{ mt: 1 }}
-                    disabled={members.length === 1} // Disable if only one member is left
+                    className="remove-member-button"
+                    disabled={members.length === 1}
                   >
                     Remove Member
                   </Button>
@@ -273,59 +261,60 @@ export default function RepresentativeForm({
                   color="primary"
                   aria-label="add"
                   onClick={addMemberField}
-                  sx={{
-                    position: "absolute",
-                    bottom: 20,
-                    right: 20,
-                  }}
+                  className="add-member-fab"
                 >
                   <AddIcon />
                 </Fab>
               </Tooltip>
             </Box>
+
             {/* Authorized Signatories Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Box className="section-box">
+              <Typography variant="h6" className="section-header">
                 Authorized Signatories
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="fieldCoordinator"
                     label="Field Coordinator"
                     value={formData.fieldCoordinator}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="witnessLocal"
                     label="Local Witness"
                     value={formData.witnessLocal}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="signedLocal"
                     label="Signed (Local)"
                     value={formData.signedLocal}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     name="signedOrg"
                     label="Signed (Org)"
                     value={formData.signedOrg}
                     onChange={onFormChange}
                     fullWidth
+                    className="text-field"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <DatePicker
                     label="Date Signed"
                     value={formData.dateSigned}
@@ -335,19 +324,24 @@ export default function RepresentativeForm({
                       })
                     }
                     renderInput={(params) => (
-                      <TextField {...params} fullWidth />
+                      <TextField
+                        {...params}
+                        fullWidth
+                        className="date-picker"
+                      />
                     )}
                   />
                 </Grid>
               </Grid>
             </Box>
+
             {/* Documents and GIS Information Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Box className="section-box">
+              <Typography variant="h6" className="section-header">
                 Documents and GIS Information
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     type="file"
                     name="loiDocument"
@@ -355,9 +349,10 @@ export default function RepresentativeForm({
                     inputProps={{ accept: ".pdf" }}
                     onChange={onFileChange}
                     fullWidth
+                    className="file-upload"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     type="file"
                     name="mouDocument"
@@ -365,9 +360,10 @@ export default function RepresentativeForm({
                     inputProps={{ accept: ".pdf" }}
                     onChange={onFileChange}
                     fullWidth
+                    className="file-upload"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className="grid-item">
                   <TextField
                     type="file"
                     name="gisDetails"
@@ -375,6 +371,7 @@ export default function RepresentativeForm({
                     inputProps={{ accept: ".gpx,.kml" }}
                     onChange={onFileChange}
                     fullWidth
+                    className="file-upload"
                   />
                 </Grid>
               </Grid>
@@ -382,11 +379,11 @@ export default function RepresentativeForm({
           </Box>
         </LocalizationProvider>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="secondary">
+      <DialogActions className="dialog-actions">
+        <Button onClick={onClose} className="cancel-button">
           Cancel
         </Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
+        <Button onClick={handleSubmit} className="submit-button">
           {formData.id ? "Update Record" : "Add Record"}
         </Button>
       </DialogActions>
