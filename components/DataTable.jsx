@@ -99,16 +99,18 @@ export default function DataTable() {
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [isRepresentativeFormOpen, setIsRepresentativeFormOpen] =
     React.useState(false); // State for Representative Form
-  const [formData, setFormData] = React.useState({
-    id: null, // Added ID for tracking during edit
-    representativeName: "",
-    representativeIdNumber: "",
-    representativePhone: "", // Corrected field name
+
+  // Initial states for Individual and Representative forms
+  const initialIndividualFormData = {
+    id: null,
+    communityMember: "",
+    idNumber: "",
+    phoneNumber: "",
     landSize: "",
     communityName: "",
     sublocation: "",
     location: "",
-    gisDetails: "", // Added GIS details
+    gisDetails: "",
     fieldCoordinator: "",
     dateSigned: null,
     signedLocal: "",
@@ -116,60 +118,79 @@ export default function DataTable() {
     witnessLocal: "",
     loiDocument: "",
     mouDocument: "",
-    source: "Other", // Default source
-    members: [], // Array to store group member details
-  });
+    source: "Other",
+    members: [],
+  };
+
+  const initialRepresentativeFormData = {
+    id: null,
+    representativeName: "",
+    representativeIdNumber: "",
+    representativePhone: "",
+    landSize: "",
+    communityName: "",
+    sublocation: "",
+    location: "",
+    gisDetails: "",
+    fieldCoordinator: "",
+    dateSigned: null,
+    signedLocal: "",
+    signedOrg: "",
+    witnessLocal: "",
+    loiDocument: "",
+    mouDocument: "",
+    source: "RepresentativeForm",
+    members: [],
+  };
+
+  const [formData, setFormData] = React.useState(initialIndividualFormData);
 
   const handleExpand = (id) => {
+    console.log("Expanding Row:", id); // Debugging log
     setExpandedRow(expandedRow === id ? null : id);
   };
 
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
+    console.log("Search Term Changed:", term); // Debugging log
     setSearchTerm(term);
     const filtered = rows.filter((row) =>
       Object.values(row).some((value) =>
         String(value).toLowerCase().includes(term)
       )
     );
+    console.log("Filtered Rows:", filtered); // Debugging log
     setFilteredRows(filtered);
   };
 
   const handleOpenForm = (formType) => {
+    console.log("Opening Form Type:", formType); // Debugging log
     if (formType === "representative") {
       setIsRepresentativeFormOpen(true);
+      setIsFormOpen(false);
+      setFormData(initialRepresentativeFormData); // Reset to Representative form defaults
+      console.log("Resetting Form Data to Representative Defaults"); // Debugging log
     } else {
       setIsFormOpen(true);
+      setIsRepresentativeFormOpen(false);
+      setFormData(initialIndividualFormData); // Reset to Individual form defaults
+      console.log("Resetting Form Data to Individual Defaults"); // Debugging log
     }
   };
 
   const handleCloseForm = () => {
+    console.log("Closing Form"); // Debugging log
     setIsFormOpen(false);
     setIsRepresentativeFormOpen(false);
-    setFormData({
-      id: null,
-      representativeName: "",
-      representativeIdNumber: "",
-      representativePhone: "", // Reset representativePhone
-      landSize: "",
-      communityName: "",
-      sublocation: "", // Reset sublocation
-      location: "", // Reset location
-      gisDetails: "", // Reset GIS details
-      fieldCoordinator: "",
-      dateSigned: null,
-      signedLocal: "",
-      signedOrg: "",
-      witnessLocal: "",
-      loiDocument: "",
-      mouDocument: "",
-      source: "Other", // Reset source
-      members: [], // Reset members array
-    });
+    setFormData(
+      isRepresentativeFormOpen
+        ? initialRepresentativeFormData
+        : initialIndividualFormData
+    );
   };
 
   const handleFormChange = (e) => {
-    console.log("Form Data Change:", e.target.name, e.target.value); // Debugging log
+    console.log("Form Field Changed:", e.target.name, e.target.value); // Debugging log
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -177,62 +198,94 @@ export default function DataTable() {
   };
 
   const handleSubmit = (submittedData) => {
+    console.log("Submit Button Clicked"); // Debugging log
     console.log("Received Submitted Data:", submittedData); // Debugging log
+
+    // Log each field and its mapping destination
+    console.log("Mapping Fields:");
+    console.log(
+      "- communityMember ->",
+      submittedData.representativeName || submittedData.communityMember
+    );
+    console.log(
+      "- idNumber ->",
+      submittedData.representativeIdNumber || submittedData.idNumber
+    );
+    console.log(
+      "- phoneNumber ->",
+      submittedData.representativePhone || submittedData.phoneNumber
+    );
+    console.log("- landSize ->", `${submittedData.landSize || "N/A"} acres`);
+    console.log("- communityName ->", submittedData.communityName);
+    console.log("- sublocation ->", submittedData.sublocation || "N/A");
+    console.log("- location ->", submittedData.location || "N/A");
+    console.log("- gisDetails ->", submittedData.gisDetails || "Not Available");
+    console.log(
+      "- fieldCoordinator ->",
+      submittedData.fieldCoordinator || "N/A"
+    );
+    console.log(
+      "- dateSigned ->",
+      submittedData.dateSigned?.format("YYYY-MM-DD") || ""
+    );
+    console.log("- signedLocal ->", submittedData.signedLocal || "No");
+    console.log("- signedOrg ->", submittedData.signedOrg || "No");
+    console.log("- witnessLocal ->", submittedData.witnessLocal || "N/A");
+    console.log(
+      "- loiDocument ->",
+      submittedData.loiDocument || "Not Uploaded"
+    );
+    console.log(
+      "- mouDocument ->",
+      submittedData.mouDocument || "Not Uploaded"
+    );
+    console.log(
+      "- source ->",
+      isRepresentativeFormOpen ? "RepresentativeForm" : "Other"
+    );
+    console.log("- members ->", submittedData.members || []);
+
+    // Prepare the new row with proper field mapping
+    const newRow = {
+      id: submittedData.id || Date.now(), // Use existing ID for edits, generate new ID for adds
+      communityMember:
+        submittedData.representativeName || submittedData.communityMember,
+      idNumber: submittedData.representativeIdNumber || submittedData.idNumber,
+      phoneNumber:
+        submittedData.representativePhone || submittedData.phoneNumber,
+      landSize: `${submittedData.landSize || "N/A"} acres`,
+      communityName: submittedData.communityName || "N/A",
+      sublocation: submittedData.sublocation || "N/A",
+      location: submittedData.location || "N/A",
+      gisDetails: submittedData.gisDetails || "Not Available",
+      fieldCoordinator: submittedData.fieldCoordinator || "N/A",
+      dateSigned: submittedData.dateSigned?.format("YYYY-MM-DD") || "",
+      signedLocal: submittedData.signedLocal || "No",
+      signedOrg: submittedData.signedOrg || "No",
+      witnessLocal: submittedData.witnessLocal || "N/A",
+      loiDocument: submittedData.loiDocument || "Not Uploaded",
+      mouDocument: submittedData.mouDocument || "Not Uploaded",
+      source: isRepresentativeFormOpen ? "RepresentativeForm" : "Other",
+      members: submittedData.members || [],
+    };
+
+    console.log("New Row Created:", newRow); // Debugging log
+
     if (submittedData.id) {
       // Update existing record
       const updatedRows = rows.map((row) =>
-        row.id === submittedData.id
-          ? {
-              ...submittedData,
-              communityMember:
-                submittedData.representativeName ||
-                submittedData.communityMember,
-              idNumber:
-                submittedData.representativeIdNumber || submittedData.idNumber,
-              phoneNumber:
-                submittedData.representativePhone || submittedData.phoneNumber,
-              landSize: `${submittedData.landSize || "N/A"} acres`,
-              communityName: submittedData.communityName,
-              sublocation: submittedData.sublocation || "N/A", // Map sublocation
-              location: submittedData.location || "N/A", // Map location
-              gisDetails: submittedData.gisDetails || "Not Available", // Map GIS details
-              dateSigned: submittedData.dateSigned?.format("YYYY-MM-DD") || "",
-              members: submittedData.members || [], // Ensure members array is included
-            }
-          : row
+        row.id === submittedData.id ? newRow : row
       );
-      console.log("Updated Rows After Edit:", updatedRows); // Log updated rows
+      console.log("Updated Rows After Edit:", updatedRows); // Debugging log
       setRows(updatedRows);
       setFilteredRows(updatedRows);
     } else {
       // Add new record
-      const newRow = {
-        id: Date.now(),
-        communityMember:
-          submittedData.representativeName || submittedData.communityMember,
-        idNumber:
-          submittedData.representativeIdNumber || submittedData.idNumber,
-        phoneNumber:
-          submittedData.representativePhone || submittedData.phoneNumber,
-        landSize: `${submittedData.landSize || "N/A"} acres`,
-        communityName: submittedData.communityName,
-        sublocation: submittedData.sublocation || "N/A", // Map sublocation
-        location: submittedData.location || "N/A", // Map location
-        gisDetails: submittedData.gisDetails || "Not Available", // Map GIS details
-        fieldCoordinator: submittedData.fieldCoordinator || "N/A",
-        dateSigned: submittedData.dateSigned?.format("YYYY-MM-DD") || "",
-        signedLocal: submittedData.signedLocal || "No",
-        signedOrg: submittedData.signedOrg || "No",
-        witnessLocal: submittedData.witnessLocal || "N/A",
-        loiDocument: submittedData.loiDocument || "Not Uploaded",
-        mouDocument: submittedData.mouDocument || "Not Uploaded",
-        source: isRepresentativeFormOpen ? "RepresentativeForm" : "Other",
-        members: submittedData.members || [], // Ensure members array is included
-      };
-      console.log("New Row Created:", newRow); // Log new row
+      console.log("Adding New Row to Table:", newRow); // Debugging log
       setRows([...rows, newRow]);
       setFilteredRows([...filteredRows, newRow]);
     }
+
     handleCloseForm();
   };
 
@@ -247,6 +300,7 @@ export default function DataTable() {
   };
 
   const handleDelete = (id) => {
+    console.log("Deleting Row with ID:", id); // Debugging log
     const updatedRows = rows.filter((row) => row.id !== id);
     setRows(updatedRows);
     setFilteredRows(updatedRows);
@@ -291,6 +345,7 @@ export default function DataTable() {
           </Button>
         </Box>
       </Box>
+
       {/* Table Content */}
       <TableContainer component={Paper}>
         <Table>
@@ -354,6 +409,7 @@ export default function DataTable() {
                     </Tooltip>
                   </TableCell>
                 </TableRow>
+
                 {/* Detail Row */}
                 <TableRow>
                   <TableCell
@@ -422,6 +478,7 @@ export default function DataTable() {
                             </div>
                           </CardContent>
                         </Card>
+
                         {/* Documentation Card */}
                         <Card
                           variant="outlined"
@@ -483,6 +540,7 @@ export default function DataTable() {
                             </div>
                           </CardContent>
                         </Card>
+
                         {/* Approved Signatories Card */}
                         <Card
                           variant="outlined"
@@ -542,6 +600,7 @@ export default function DataTable() {
                             </Grid>
                           </CardContent>
                         </Card>
+
                         {/* Conditional Fourth Card for RepresentativeForm Source */}
                         {row.source === "RepresentativeForm" && (
                           <Card
@@ -617,6 +676,7 @@ export default function DataTable() {
           </TableBody>
         </Table>
       </TableContainer>
+
       {/* Add/Edit Form Dialog */}
       {isFormOpen && (
         <AddFormDialog
@@ -628,6 +688,7 @@ export default function DataTable() {
           isEditMode={!!formData.id} // Pass a flag to indicate edit mode
         />
       )}
+
       {/* Representative Form Dialog */}
       {isRepresentativeFormOpen && (
         <RepresentativeForm

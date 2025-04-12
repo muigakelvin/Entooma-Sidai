@@ -1,4 +1,3 @@
-// src/components/AddFormDialog.jsx
 import React from "react";
 import {
   Dialog,
@@ -23,6 +22,11 @@ export default function AddFormDialog({
   onFileChange,
   onSubmit,
 }) {
+  // Function to handle form submission
+  const handleSubmit = () => {
+    onSubmit(formData);
+  };
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>
@@ -216,7 +220,7 @@ export default function AddFormDialog({
         <Button onClick={onClose} color="secondary">
           Cancel
         </Button>
-        <Button onClick={onSubmit} variant="contained" color="primary">
+        <Button onClick={handleSubmit} variant="contained" color="primary">
           {formData.id ? "Update Record" : "Add Record"}
         </Button>
       </DialogActions>
