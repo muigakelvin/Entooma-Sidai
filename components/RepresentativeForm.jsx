@@ -1,3 +1,4 @@
+// src/components/RepresentativeForm.jsx
 import React from "react";
 import {
   Dialog,
@@ -16,7 +17,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import AddIcon from "@mui/icons-material/Add";
-import "../index.css"; // Import the CSS file
+import "../index.css";
 
 export default function RepresentativeForm({
   open,

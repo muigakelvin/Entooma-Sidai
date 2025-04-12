@@ -51,7 +51,6 @@ const initialRows = [
     signedOrg: "Yes",
     witnessLocal: "Witness B",
     loiDocument: "Not Uploaded",
-    gisDetails: "Not Available",
     mouDocument: "Uploaded",
     source: "Other", // Default source
     members: [
@@ -99,6 +98,7 @@ export default function DataTable() {
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [isRepresentativeFormOpen, setIsRepresentativeFormOpen] =
     React.useState(false); // State for Representative Form
+
   // Initial states for Individual and Representative forms
   const initialIndividualFormData = {
     id: null,
@@ -120,6 +120,7 @@ export default function DataTable() {
     source: "Other",
     members: [],
   };
+
   const initialRepresentativeFormData = {
     id: null,
     representativeName: "",
@@ -127,6 +128,7 @@ export default function DataTable() {
     representativePhone: "",
     landSize: "",
     communityName: "",
+    groupName: "", // Include groupName explicitly
     sublocation: "",
     location: "",
     gisDetails: "",
@@ -140,43 +142,37 @@ export default function DataTable() {
     source: "RepresentativeForm",
     members: [],
   };
+
   const [formData, setFormData] = React.useState(initialIndividualFormData);
 
   const handleExpand = (id) => {
-    console.log("Expanding Row:", id); // Debugging log
     setExpandedRow(expandedRow === id ? null : id);
   };
 
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
-    console.log("Search Term Changed:", term); // Debugging log
     setSearchTerm(term);
     const filtered = rows.filter((row) =>
       Object.values(row).some((value) =>
         String(value).toLowerCase().includes(term)
       )
     );
-    console.log("Filtered Rows:", filtered); // Debugging log
     setFilteredRows(filtered);
   };
 
   const handleOpenForm = (formType) => {
-    console.log("Opening Form Type:", formType); // Debugging log
     if (formType === "representative") {
       setIsRepresentativeFormOpen(true);
       setIsFormOpen(false);
-      setFormData(initialRepresentativeFormData); // Reset to Representative form defaults
-      console.log("Resetting Form Data to Representative Defaults"); // Debugging log
+      setFormData(initialRepresentativeFormData);
     } else {
       setIsFormOpen(true);
       setIsRepresentativeFormOpen(false);
-      setFormData(initialIndividualFormData); // Reset to Individual form defaults
-      console.log("Resetting Form Data to Individual Defaults"); // Debugging log
+      setFormData(initialIndividualFormData);
     }
   };
 
   const handleCloseForm = () => {
-    console.log("Closing Form"); // Debugging log
     setIsFormOpen(false);
     setIsRepresentativeFormOpen(false);
     setFormData(
@@ -187,7 +183,6 @@ export default function DataTable() {
   };
 
   const handleFormChange = (e) => {
-    console.log("Form Field Changed:", e.target.name, e.target.value); // Debugging log
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -195,18 +190,16 @@ export default function DataTable() {
   };
 
   const handleSubmit = (submittedData) => {
-    console.log("Submit Button Clicked"); // Debugging log
-    console.log("Received Submitted Data:", submittedData); // Debugging log
-    // Prepare the new row with proper field mapping
     const newRow = {
-      id: submittedData.id || Date.now(), // Use existing ID for edits, generate new ID for adds
+      id: submittedData.id || Date.now(),
       communityMember:
         submittedData.representativeName || submittedData.communityMember,
       idNumber: submittedData.representativeIdNumber || submittedData.idNumber,
       phoneNumber:
         submittedData.representativePhone || submittedData.phoneNumber,
       landSize: `${submittedData.landSize || "N/A"} acres`,
-      communityName: submittedData.communityName || "N/A", // Ensure communityName is included
+      communityName: submittedData.communityName || "N/A",
+      groupName: submittedData.groupName || "N/A", // Map groupName to the new column
       sublocation: submittedData.sublocation || "N/A",
       location: submittedData.location || "N/A",
       gisDetails: submittedData.gisDetails || "Not Available",
@@ -220,18 +213,14 @@ export default function DataTable() {
       source: isRepresentativeFormOpen ? "RepresentativeForm" : "Other",
       members: submittedData.members || [],
     };
-    console.log("New Row Created:", newRow); // Debugging log
+
     if (submittedData.id) {
-      // Update existing record
       const updatedRows = rows.map((row) =>
         row.id === submittedData.id ? newRow : row
       );
-      console.log("Updated Rows After Edit:", updatedRows); // Debugging log
       setRows(updatedRows);
       setFilteredRows(updatedRows);
     } else {
-      // Add new record
-      console.log("Adding New Row to Table:", newRow); // Debugging log
       setRows([...rows, newRow]);
       setFilteredRows([...filteredRows, newRow]);
     }
@@ -240,21 +229,20 @@ export default function DataTable() {
 
   const handleEdit = (id) => {
     const rowToEdit = rows.find((row) => row.id === id);
-    console.log("Editing Row:", rowToEdit); // Debugging log
     if (rowToEdit.source === "RepresentativeForm") {
-      // Map fields for RepresentativeForm
       setFormData({
         id: rowToEdit.id,
-        representativeName: rowToEdit.communityMember || "", // Map communityMember to representativeName
-        representativeIdNumber: rowToEdit.idNumber || "", // Map idNumber to representativeIdNumber
-        representativePhone: rowToEdit.phoneNumber || "", // Map phoneNumber to representativePhone
-        landSize: rowToEdit.landSize.replace(" acres", "") || "", // Remove " acres" suffix
-        communityName: rowToEdit.communityName || "", // Ensure communityName is included
+        representativeName: rowToEdit.communityMember || "",
+        representativeIdNumber: rowToEdit.idNumber || "",
+        representativePhone: rowToEdit.phoneNumber || "",
+        landSize: rowToEdit.landSize.replace(" acres", "") || "",
+        communityName: rowToEdit.communityName || "",
+        groupName: rowToEdit.groupName || "", // Ensure groupName is included
         sublocation: rowToEdit.sublocation || "",
         location: rowToEdit.location || "",
         gisDetails: rowToEdit.gisDetails || "",
         fieldCoordinator: rowToEdit.fieldCoordinator || "",
-        dateSigned: rowToEdit.dateSigned ? dayjs(rowToEdit.dateSigned) : null, // Parse date with dayjs
+        dateSigned: rowToEdit.dateSigned ? dayjs(rowToEdit.dateSigned) : null,
         signedLocal: rowToEdit.signedLocal || "",
         signedOrg: rowToEdit.signedOrg || "",
         witnessLocal: rowToEdit.witnessLocal || "",
@@ -265,21 +253,20 @@ export default function DataTable() {
       });
       setIsRepresentativeFormOpen(true);
       setIsFormOpen(false);
-      console.log("Opening Representative Form for Edit"); // Debugging log
     } else {
-      // Map fields for Individual Form
       setFormData({
         id: rowToEdit.id,
         communityMember: rowToEdit.communityMember || "",
         idNumber: rowToEdit.idNumber || "",
         phoneNumber: rowToEdit.phoneNumber || "",
-        landSize: rowToEdit.landSize.replace(" acres", "") || "", // Remove " acres" suffix
-        communityName: rowToEdit.communityName || "", // Ensure communityName is included
+        landSize: rowToEdit.landSize.replace(" acres", "") || "",
+        communityName: rowToEdit.communityName || "",
+        groupName: rowToEdit.groupName || "", // Ensure groupName is included
         sublocation: rowToEdit.sublocation || "",
         location: rowToEdit.location || "",
         gisDetails: rowToEdit.gisDetails || "",
         fieldCoordinator: rowToEdit.fieldCoordinator || "",
-        dateSigned: rowToEdit.dateSigned ? dayjs(rowToEdit.dateSigned) : null, // Parse date with dayjs
+        dateSigned: rowToEdit.dateSigned ? dayjs(rowToEdit.dateSigned) : null,
         signedLocal: rowToEdit.signedLocal || "",
         signedOrg: rowToEdit.signedOrg || "",
         witnessLocal: rowToEdit.witnessLocal || "",
@@ -290,12 +277,10 @@ export default function DataTable() {
       });
       setIsFormOpen(true);
       setIsRepresentativeFormOpen(false);
-      console.log("Opening Individual Form for Edit"); // Debugging log
     }
   };
 
   const handleDelete = (id) => {
-    console.log("Deleting Row with ID:", id); // Debugging log
     const updatedRows = rows.filter((row) => row.id !== id);
     setRows(updatedRows);
     setFilteredRows(updatedRows);
@@ -321,7 +306,6 @@ export default function DataTable() {
           }}
         />
         <Box className="action-buttons">
-          <AddIcon sx={{ color: "#4caf50", fontSize: 32, marginRight: 1 }} />
           <Button
             variant="contained"
             onClick={() => handleOpenForm("individual")}
@@ -340,6 +324,7 @@ export default function DataTable() {
           </Button>
         </Box>
       </Box>
+
       {/* Table Content */}
       <TableContainer component={Paper}>
         <Table>
@@ -415,7 +400,6 @@ export default function DataTable() {
                       timeout="auto"
                       unmountOnExit
                     >
-                      {/* Horizontal Card Layout */}
                       <Box
                         className="card-container"
                         sx={{
@@ -432,8 +416,8 @@ export default function DataTable() {
                             expandedRow === row.id ? "active-card" : ""
                           }`}
                           sx={{
-                            flex: "1 1 calc(33% - 16px)", // Each card takes ~33% width
-                            minWidth: 300, // Minimum width for responsiveness
+                            flex: "1 1 calc(33% - 16px)",
+                            minWidth: 300,
                           }}
                         >
                           <CardContent>
@@ -471,6 +455,7 @@ export default function DataTable() {
                             </div>
                           </CardContent>
                         </Card>
+
                         {/* Documentation Card */}
                         <Card
                           variant="outlined"
@@ -532,6 +517,7 @@ export default function DataTable() {
                             </div>
                           </CardContent>
                         </Card>
+
                         {/* Approved Signatories Card */}
                         <Card
                           variant="outlined"
@@ -591,6 +577,7 @@ export default function DataTable() {
                             </Grid>
                           </CardContent>
                         </Card>
+
                         {/* Conditional Fourth Card for RepresentativeForm Source */}
                         {row.source === "RepresentativeForm" && (
                           <Card
@@ -615,9 +602,8 @@ export default function DataTable() {
                                   marginBottom: 2,
                                 }}
                               >
-                                {row.communityName}
+                                {row.groupName} {/* Use groupName here */}
                               </Typography>
-
                               {/* Group Member Details Section */}
                               <Typography
                                 variant="h6"
@@ -637,28 +623,22 @@ export default function DataTable() {
                                   </TableHead>
                                   <TableBody>
                                     {row.members && row.members.length > 0 ? (
-                                      row.members.map((member, index) => {
-                                        console.log(
-                                          "Rendering Member:",
-                                          member
-                                        ); // Debugging log
-                                        return (
-                                          <TableRow key={index}>
-                                            <TableCell>
-                                              {member.memberName}
-                                            </TableCell>
-                                            <TableCell>
-                                              {member.memberPhoneNumber}
-                                            </TableCell>
-                                            <TableCell>
-                                              {member.memberIdNumber}
-                                            </TableCell>
-                                            <TableCell>
-                                              {member.titleNumber}
-                                            </TableCell>
-                                          </TableRow>
-                                        );
-                                      })
+                                      row.members.map((member, index) => (
+                                        <TableRow key={index}>
+                                          <TableCell>
+                                            {member.memberName}
+                                          </TableCell>
+                                          <TableCell>
+                                            {member.memberPhoneNumber}
+                                          </TableCell>
+                                          <TableCell>
+                                            {member.memberIdNumber}
+                                          </TableCell>
+                                          <TableCell>
+                                            {member.titleNumber}
+                                          </TableCell>
+                                        </TableRow>
+                                      ))
                                     ) : (
                                       <TableRow>
                                         <TableCell colSpan={4} align="center">
@@ -681,6 +661,7 @@ export default function DataTable() {
           </TableBody>
         </Table>
       </TableContainer>
+
       {/* Add/Edit Form Dialog */}
       {isFormOpen && (
         <AddFormDialog
@@ -692,6 +673,7 @@ export default function DataTable() {
           isEditMode={!!formData.id} // Pass a flag to indicate edit mode
         />
       )}
+
       {/* Representative Form Dialog */}
       {isRepresentativeFormOpen && (
         <RepresentativeForm
@@ -701,7 +683,6 @@ export default function DataTable() {
           onFormChange={handleFormChange}
           onFileChange={(e) => {
             const file = e.target.files[0];
-            console.log("File Change Detected:", e.target.name, file); // Debugging log
             setFormData({
               ...formData,
               [e.target.name]: URL.createObjectURL(file),
